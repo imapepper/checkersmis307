@@ -1,6 +1,4 @@
-package edu.iastate.mis307;
-
-import edu.iastate.mis307.components.CheckerBoardPanel;
+import components.CheckerBoardPanel;
 
 import javax.swing.*;
 

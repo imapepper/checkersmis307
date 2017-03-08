@@ -1,4 +1,4 @@
-package edu.iastate.mis307.objects;
+package objects;
 
 public class CheckerPiece {
     private String color;

@@ -1,6 +1,6 @@
-package edu.iastate.mis307.components;
+package components;
 
-import edu.iastate.mis307.objects.CheckerPiece;
+import objects.CheckerPiece;
 
 import javax.swing.*;
 import java.awt.*;
