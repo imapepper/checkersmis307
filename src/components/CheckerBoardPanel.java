@@ -4,6 +4,7 @@ import objects.CheckerPiece;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class CheckerBoardPanel extends JPanel {
 
@@ -64,8 +65,53 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     public void movePiece(int fromY, int fromX, int toY, int toX) {
+        if(spaces[fromY][fromX].getPiece() == null) {
+            throw new IllegalArgumentException("There is no piece to move on that space");
+        }
+        if(spaces[toY][toX].getPiece() != null) {
+            throw new IllegalArgumentException("Space already has a piece");
+        }
         CheckerPiece piece = removePiece(fromY, fromX);
         spaces[toY][toX].setPiece(piece);
+    }
+
+    public Space[] findOpenSpaces(Space space) {
+        if(space.getPiece() == null) {
+            throw new IllegalArgumentException("There is no piece to move on that space");
+        }
+        Space[] openSpaces = new Space[4];
+        int i = 0;
+        int currentX = space.getxCoordinate() - 1;
+        int currentY = space.getyCoordinate() - 1;
+        if(currentX - 1 >= 0 && currentY - 1 >= 0) {
+            Space newSpace = spaces[currentY - 1][currentX - 1];
+            if (newSpace.getPiece() == null) {
+                openSpaces[i] = newSpace;
+                i++;
+            }
+        }
+        if(currentX + 1 < 8 && currentY - 1 >= 0) {
+            Space newSpace = spaces[currentY - 1][currentX + 1];
+            if (newSpace.getPiece() == null) {
+                openSpaces[i] = newSpace;
+                i++;
+            }
+        }
+        if(currentX - 1 >= 0 && currentY + 1 < 8) {
+            Space newSpace = spaces[currentY + 1][currentX - 1];
+            if (newSpace.getPiece() == null) {
+                openSpaces[i] = newSpace;
+                i++;
+            }
+        }
+        if(currentX + 1 < 8 && currentY + 1 < 8) {
+            Space newSpace = spaces[currentY + 1][currentX + 1];
+            if (newSpace.getPiece() == null) {
+                openSpaces[i] = newSpace;
+                i++;
+            }
+        }
+        return Arrays.copyOf(openSpaces, i);
     }
 
     public Space[][] getSpaces() {
