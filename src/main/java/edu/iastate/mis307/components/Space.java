@@ -26,7 +26,7 @@ public class Space extends JLabel {
 
     private void initializeLabel() {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        setPreferredSize(new Dimension(50, 50));
+        setPreferredSize(new Dimension(30, 30));
         if(isPlayable()) {
             setBackground(new Color(78, 49, 36));
         } else {
