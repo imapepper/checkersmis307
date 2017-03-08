@@ -59,8 +59,12 @@ public class CheckerBoardPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 40, 40);
     }
 
+    public CheckerPiece removePiece(int fromY, int fromX) {
+        return spaces[fromY][fromX].removePiece();
+    }
+
     public void movePiece(int fromY, int fromX, int toY, int toX) {
-        CheckerPiece piece = spaces[fromY][fromX].removePiece();
+        CheckerPiece piece = removePiece(fromY, fromX);
         spaces[toY][toX].setPiece(piece);
     }
 
