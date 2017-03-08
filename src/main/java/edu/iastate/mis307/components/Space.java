@@ -5,7 +5,7 @@ import edu.iastate.mis307.objects.CheckerPiece;
 import javax.swing.*;
 import java.awt.*;
 
-public class Location extends JLabel {
+public class Space extends JLabel {
 
     public final static ImageIcon blackPiece = new ImageIcon(ClassLoader.getSystemResource("img/blackCheckerPiece80x80.png"));
     public final static ImageIcon blackKing = new ImageIcon(ClassLoader.getSystemResource("img/blackCheckerPieceKing80x80.png"));
@@ -17,9 +17,9 @@ public class Location extends JLabel {
     private boolean isPlayable;
     private CheckerPiece piece;
 
-    public Location(int xCoordinate, int yCoordinate, boolean isPlayable) {
-        this.xCoordinate = xCoordinate;
+    public Space(int yCoordinate, int xCoordinate, boolean isPlayable) {
         this.yCoordinate = yCoordinate;
+        this.xCoordinate = xCoordinate;
         this.isPlayable = isPlayable;
         initializeLabel();
     }
@@ -69,7 +69,10 @@ public class Location extends JLabel {
         }
     }
 
-    public void removePiece() {
+    public CheckerPiece removePiece() {
+        CheckerPiece removed = piece;
         piece = null;
+        setIcon(null);
+        return removed;
     }
 }

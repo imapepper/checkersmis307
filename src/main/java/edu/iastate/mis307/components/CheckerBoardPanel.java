@@ -1,40 +1,70 @@
 package edu.iastate.mis307.components;
 
-import edu.iastate.mis307.objects.Board;
+import edu.iastate.mis307.objects.CheckerPiece;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class CheckerBoardPanel extends JPanel {
 
-    private Location[][] locations;
+    private Space[][] spaces;
 
-    public CheckerBoardPanel(Board board) {
-        locations = board.getSpaces();
+    public CheckerBoardPanel() {
+        initializeSpaces();
         setLayout(new GridBagLayout());
-        initializeBoardGUI(board);
+        initializeBoardGUI();
     }
 
-    private void initializeBoardGUI(Board board) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Location location = locations[i][j];
-                this.add(location, createConstraints(j, i));
+    private void initializeSpaces() {
+        spaces = new Space[8][8];
+        int index = 0;
+        while (index < 32) {
+            for (int i = 0; i < 8; i++) {
+                int start;
+                if (i % 2 == 1) {
+                    start = 0;
+                } else {
+                    start = 1;
+                }
+                for (int j = start; j < 8; j += 2) {
+                    spaces[i][j] = new Space(i + 1, j + 1, true);
+                    if(i < 3) {
+                        spaces[i][j].setPiece(new CheckerPiece("black"));
+                    } else if(i > 4) {
+                        spaces[i][j].setPiece(new CheckerPiece("red"));
+                    }
+                    if(start == 0) {
+                        spaces[i][j + 1] = new Space(i + 2, j + 1, false);
+                    } else {
+                        spaces[i][j - 1] = new Space(i, j + 1, false);
+                    }
+                    index++;
+                }
             }
         }
     }
 
-    public GridBagConstraints createConstraints(int gridx, int gridy) {
-        return new GridBagConstraints(gridx, gridy, 1, 1,
+    private void initializeBoardGUI() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Space space = spaces[i][j];
+                add(space, createConstraints(i, j));
+            }
+        }
+    }
+
+    private GridBagConstraints createConstraints(int gridY, int gridX) {
+        return new GridBagConstraints(gridX, gridY, 1, 1,
                 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 40, 40);
     }
 
-    public Location[][] getLocations() {
-        return locations;
+    public void movePiece(int fromY, int fromX, int toY, int toX) {
+        CheckerPiece piece = spaces[fromY][fromX].removePiece();
+        spaces[toY][toX].setPiece(piece);
     }
 
-    public void setLocations(Location[][] locations) {
-        this.locations = locations;
+    public Space[][] getSpaces() {
+        return spaces;
     }
 }

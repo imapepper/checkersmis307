@@ -4,7 +4,7 @@ public class CheckerPiece {
     private String color;
     private boolean isKing;
 
-    CheckerPiece(String color) {
+    public CheckerPiece(String color) {
         this.color = color;
         isKing = false;
     }
