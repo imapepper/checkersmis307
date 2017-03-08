@@ -56,7 +56,7 @@ public class CheckerBoardPanel extends JPanel {
     private GridBagConstraints createConstraints(int gridY, int gridX) {
         return new GridBagConstraints(gridX, gridY, 1, 1,
                 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 40, 40);
+                new Insets(0, 0, 0, 0), 50, 50);
     }
 
     public void movePiece(int fromY, int fromX, int toY, int toX) {
