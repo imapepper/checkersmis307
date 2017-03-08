@@ -7,10 +7,10 @@ import java.awt.*;
 
 public class Space extends JLabel {
 
-    public final static ImageIcon blackPiece = new ImageIcon(ClassLoader.getSystemResource("img/blackCheckerPiece80x80.png"));
-    public final static ImageIcon blackKing = new ImageIcon(ClassLoader.getSystemResource("img/blackCheckerPieceKing80x80.png"));
-    public final static ImageIcon redPiece = new ImageIcon(ClassLoader.getSystemResource("img/redCheckerPiece80x80.png"));
-    public final static ImageIcon redKing = new ImageIcon(ClassLoader.getSystemResource("img/redCheckerPieceKing80x80.png"));
+    public final static ImageIcon blackPiece = new ImageIcon("resources/img/blackCheckerPiece80x80.png");
+    public final static ImageIcon blackKing = new ImageIcon("resources/img/blackCheckerPieceKing80x80.png");
+    public final static ImageIcon redPiece = new ImageIcon("resources/img/redCheckerPiece80x80.png");
+    public final static ImageIcon redKing = new ImageIcon("resources/img/redCheckerPieceKing80x80.png");
 
     private int xCoordinate;
     private int yCoordinate;
