@@ -16,7 +16,7 @@ public class CheckerBoardPanel extends JPanel {
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeBoardGUI();
-        initializeStatus(status);
+        initializeStatus();
     }
 
     private void initializeSpaces() {
@@ -59,7 +59,7 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
-    private void initializeStatus(String status) {
+    private void initializeStatus() {
     	JLabel label = new JLabel("STATUS: " + status);
     	add(label);
     }
