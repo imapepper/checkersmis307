@@ -11,6 +11,10 @@ public class Space extends JLabel {
     public final static ImageIcon blackKing = new ImageIcon("resources/img/blackCheckerPieceKing80x80.png");
     public final static ImageIcon redPiece = new ImageIcon("resources/img/redCheckerPiece80x80.png");
     public final static ImageIcon redKing = new ImageIcon("resources/img/redCheckerPieceKing80x80.png");
+    public final static ImageIcon selectedBlackPiece = new ImageIcon("resources/img/blackCheckerPieceSelected.png");
+    public final static ImageIcon selectedBlackKing = new ImageIcon("resources/img/blackCheckerPieceKingSelected.png");
+    public final static ImageIcon selectedRedPiece = new ImageIcon("resources/img/redCheckerPieceSelected.png");
+    public final static ImageIcon selectedRedKing = new ImageIcon("resources/img/redCheckerPieceKingSelected.png");
 
     private int xCoordinate;
     private int yCoordinate;
@@ -54,17 +58,21 @@ public class Space extends JLabel {
 
     public void setPiece(CheckerPiece piece) {
         this.piece = piece;
+        changeIcon(false);
+    }
+
+    public void changeIcon(boolean selected) {
         if(piece.isKing()) {
             if ("black".equals(piece.getColor())) {
-                setIcon(blackKing);
+                setIcon(selected ? selectedBlackKing : blackKing);
             } else {
-                setIcon(redKing);
+                setIcon(selected ? selectedRedKing : redKing);
             }
         } else {
             if ("black".equals(piece.getColor())) {
-                setIcon(blackPiece);
+                setIcon(selected ? selectedBlackPiece : blackPiece);
             } else {
-                setIcon(redPiece);
+                setIcon(selected ? selectedRedPiece : redPiece);
             }
         }
     }
