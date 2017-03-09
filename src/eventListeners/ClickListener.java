@@ -35,18 +35,27 @@ public class ClickListener implements MouseListener {
             if(selected != null) {
                 selected.changeIcon(false);
             }
-            space.changeIcon(true);
-            selected = space;
-            if(validMoves != null) {
-                for (Space validMove : validMoves) {
-                    validMove.setBackground(new Color(78, 49, 36));
+            if(space.equals(selected)) {
+                selected.changeIcon(false);
+                selected = null;
+                highlightValidMoveSpaces(validMoves, new Color(78, 49, 36));
+                validMoves = null;
+            } else {
+                space.changeIcon(true);
+                selected = space;
+                if(validMoves != null) {
+                    highlightValidMoveSpaces(validMoves, new Color(78, 49, 36));
                 }
+                Space[] newValidMoves = CheckerBoardPanel.getValidMoves((Space) e.getComponent());
+                highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
+                validMoves = newValidMoves;
             }
-            Space[] newValidMoves = CheckerBoardPanel.getValidMoves((Space) e.getComponent());
-            for(Space validMove : newValidMoves) {
-                validMove.setBackground(new Color(255, 255, 255));
-            }
-            validMoves = newValidMoves;
+        }
+    }
+
+    private void highlightValidMoveSpaces(Space[] validMoves, Color color) {
+        for (Space validMove : validMoves) {
+            validMove.setBackground(color);
         }
     }
 
