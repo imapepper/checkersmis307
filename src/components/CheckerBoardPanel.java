@@ -63,7 +63,6 @@ public class CheckerBoardPanel extends JPanel {
     	JLabel label = new JLabel("STATUS: " + status);
     	add(label);
     }
-   
 
     private GridBagConstraints createConstraints(int gridY, int gridX) {
         return new GridBagConstraints(gridX, gridY, 1, 1,

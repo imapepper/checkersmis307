@@ -12,9 +12,8 @@ public class Main {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
       
-        while(true) {
-        	//panel.updateStates();
+        /*while(true) {
         	System.out.println(panel.status);
-        }
+        }*/
     }
 }
