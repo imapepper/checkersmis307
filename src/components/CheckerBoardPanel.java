@@ -10,11 +10,13 @@ import java.util.Arrays;
 public class CheckerBoardPanel extends JPanel {
 
     private static Space[][] spaces;
+    public static String status;
 
     public CheckerBoardPanel() {
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeBoardGUI();
+        initializeStatus(status);
     }
 
     private void initializeSpaces() {
@@ -52,9 +54,16 @@ public class CheckerBoardPanel extends JPanel {
                 Space space = spaces[i][j];
                 space.addMouseListener(new ClickListener());
                 add(space, createConstraints(i, j));
+                status = "Idle...";
             }
         }
     }
+    
+    private void initializeStatus(String status) {
+    	JLabel label = new JLabel("STATUS: " + status);
+    	add(label);
+    }
+   
 
     private GridBagConstraints createConstraints(int gridY, int gridX) {
         return new GridBagConstraints(gridX, gridY, 1, 1,
