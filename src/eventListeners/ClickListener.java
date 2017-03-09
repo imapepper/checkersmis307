@@ -2,7 +2,6 @@ package eventListeners;
 
 import components.CheckerBoardPanel;
 import components.Space;
-import objects.CheckerPiece;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -13,11 +12,26 @@ public class ClickListener implements MouseListener {
     private static Space selected;
     private static Space[] validMoves;
 
+    public static Space getSelected() {
+        return selected;
+    }
+
+    public static void setSelected(Space selected) {
+        ClickListener.selected = selected;
+    }
+
+    public static Space[] getValidMoves() {
+        return validMoves;
+    }
+
+    public static void setValidMoves(Space[] validMoves) {
+        ClickListener.validMoves = validMoves;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         Space space = (Space) e.getComponent();
-        CheckerPiece piece;
-        if((piece = space.getPiece()) != null) {
+        if(space.getPiece() != null) {
             if(selected != null) {
                 selected.changeIcon(false);
             }
