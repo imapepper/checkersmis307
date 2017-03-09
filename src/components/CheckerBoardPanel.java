@@ -1,5 +1,6 @@
 package components;
 
+import eventListeners.ClickListener;
 import objects.CheckerPiece;
 
 import javax.swing.*;
@@ -8,7 +9,7 @@ import java.util.Arrays;
 
 public class CheckerBoardPanel extends JPanel {
 
-    private Space[][] spaces;
+    private static Space[][] spaces;
 
     public CheckerBoardPanel() {
         initializeSpaces();
@@ -49,6 +50,7 @@ public class CheckerBoardPanel extends JPanel {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Space space = spaces[i][j];
+                space.addMouseListener(new ClickListener());
                 add(space, createConstraints(i, j));
             }
         }
@@ -60,61 +62,81 @@ public class CheckerBoardPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 50, 50);
     }
 
-    public CheckerPiece removePiece(int fromY, int fromX) {
+    public static CheckerPiece removePiece(int fromY, int fromX) {
         return spaces[fromY][fromX].removePiece();
     }
 
-    public void movePiece(int fromY, int fromX, int toY, int toX) {
-        if(spaces[fromY][fromX].getPiece() == null) {
+    public static void movePiece(int fromY, int fromX, int toY, int toX) {
+        if(spaces[fromY - 1][fromX - 1].getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
         }
-        if(spaces[toY][toX].getPiece() != null) {
+        if(spaces[toY - 1][toX - 1].getPiece() != null) {
             throw new IllegalArgumentException("Space already has a piece");
         }
-        CheckerPiece piece = removePiece(fromY, fromX);
-        spaces[toY][toX].setPiece(piece);
+        CheckerPiece piece = removePiece(fromY - 1, fromX - 1);
+        spaces[toY - 1][toX - 1].setPiece(piece);
     }
 
-    public Space[] findOpenSpaces(Space space) {
+    public static Space[] getValidMoves(Space space) {
         if(space.getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
         }
         Space[] openSpaces = new Space[4];
         int i = 0;
-        int currentX = space.getxCoordinate() - 1;
-        int currentY = space.getyCoordinate() - 1;
-        if(currentX - 1 >= 0 && currentY - 1 >= 0) {
-            Space newSpace = spaces[currentY - 1][currentX - 1];
-            if (newSpace.getPiece() == null) {
-                openSpaces[i] = newSpace;
+        CheckerPiece piece = space.getPiece();
+        String color = piece.getColor();
+        boolean isKing = piece.isKing();
+
+        if("red".equals(color) || isKing) {
+            Space aboveLeft = isValidMove(space, -1, -1);
+            if(aboveLeft != null) {
+                openSpaces[i] = aboveLeft;
+                i++;
+            }
+            Space aboveRight = isValidMove(space, -1, 1);
+            if(aboveRight != null) {
+                openSpaces[i] = aboveRight;
                 i++;
             }
         }
-        if(currentX + 1 < 8 && currentY - 1 >= 0) {
-            Space newSpace = spaces[currentY - 1][currentX + 1];
-            if (newSpace.getPiece() == null) {
-                openSpaces[i] = newSpace;
+        if("black".equals(color) || isKing) {
+            Space belowLeft = isValidMove(space, 1, -1);
+            if(belowLeft != null) {
+                openSpaces[i] = belowLeft;
                 i++;
             }
-        }
-        if(currentX - 1 >= 0 && currentY + 1 < 8) {
-            Space newSpace = spaces[currentY + 1][currentX - 1];
-            if (newSpace.getPiece() == null) {
-                openSpaces[i] = newSpace;
-                i++;
-            }
-        }
-        if(currentX + 1 < 8 && currentY + 1 < 8) {
-            Space newSpace = spaces[currentY + 1][currentX + 1];
-            if (newSpace.getPiece() == null) {
-                openSpaces[i] = newSpace;
+            Space belowRight = isValidMove(space, 1, 1);
+            if(belowRight != null) {
+                openSpaces[i] = belowRight;
                 i++;
             }
         }
         return Arrays.copyOf(openSpaces, i);
     }
 
-    public Space[][] getSpaces() {
+    private static Space isValidMove(Space space, int changeY, int changeX) {
+        int yCoordinate = space.getyCoordinate() - 1;
+        int xCoordinate = space.getxCoordinate() - 1;
+        CheckerPiece piece = space.getPiece();
+        String color = piece.getColor();
+
+        if(yCoordinate + changeY >= 0 && yCoordinate + changeY < 8 &&
+                xCoordinate + changeX >= 0 && xCoordinate + changeX < 8) {
+            Space newSpace = spaces[yCoordinate + changeY][xCoordinate + changeX];
+            CheckerPiece newPiece;
+            if((newPiece = newSpace.getPiece()) == null) {
+                return newSpace;
+            } else if(!color.equals(newPiece.getColor()) && (changeY < 2 && changeY > -2 && changeX < 2 && changeY > -2)) {
+                return isValidMove(space, changeY * 2, changeX * 2);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static Space[][] getSpaces() {
         return spaces;
     }
 }
