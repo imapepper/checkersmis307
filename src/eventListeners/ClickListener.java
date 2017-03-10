@@ -31,21 +31,21 @@ public class ClickListener implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         Space space = (Space) e.getComponent();
-        if(space.getPiece() != null) {
-            if(selected != null) {
-                selected.changeIcon(false);
+        if(validMoves != null) {
+            for (Space validMove : validMoves) {
+                if (space.equals(validMove)) {
+                    CheckerBoardPanel.movePiece(selected.getyCoordinate(), selected.getxCoordinate(),
+                            validMove.getyCoordinate(), validMove.getxCoordinate());
+                    resetSelected();
+                    return;
+                }
             }
-            if(space.equals(selected)) {
-                selected.changeIcon(false);
-                selected = null;
-                highlightValidMoveSpaces(validMoves, new Color(78, 49, 36));
-                validMoves = null;
-            } else {
+        }
+        if(space.getPiece() != null) {
+            if(!space.equals(selected)) {
+                resetSelected();
                 space.changeIcon(true);
                 selected = space;
-                if(validMoves != null) {
-                    highlightValidMoveSpaces(validMoves, new Color(78, 49, 36));
-                }
                 Space[] newValidMoves = CheckerBoardPanel.getValidMoves((Space) e.getComponent());
                 highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
                 validMoves = newValidMoves;
@@ -56,6 +56,17 @@ public class ClickListener implements MouseListener {
     private void highlightValidMoveSpaces(Space[] validMoves, Color color) {
         for (Space validMove : validMoves) {
             validMove.setBackground(color);
+        }
+    }
+
+    private void resetSelected() {
+        if(selected != null && selected.getPiece() != null) {
+            selected.changeIcon(false);
+            selected = null;
+        }
+        if(validMoves != null) {
+            highlightValidMoveSpaces(validMoves, new Color(78, 49, 36));
+            validMoves = null;
         }
     }
 
