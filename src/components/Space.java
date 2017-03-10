@@ -7,10 +7,10 @@ import java.awt.*;
 
 public class Space extends JLabel {
 
-    private final static ImageIcon blackPiece = new ImageIcon("resources/img/blackCheckerPiece80x80.png");
-    private final static ImageIcon blackKing = new ImageIcon("resources/img/blackCheckerPieceKing80x80.png");
-    private final static ImageIcon redPiece = new ImageIcon("resources/img/redCheckerPiece80x80.png");
-    private final static ImageIcon redKing = new ImageIcon("resources/img/redCheckerPieceKing80x80.png");
+    private final static ImageIcon blackPiece = new ImageIcon("resources/img/blackCheckerPiece.png");
+    private final static ImageIcon blackKing = new ImageIcon("resources/img/blackCheckerPieceKing.png");
+    private final static ImageIcon redPiece = new ImageIcon("resources/img/redCheckerPiece.png");
+    private final static ImageIcon redKing = new ImageIcon("resources/img/redCheckerPieceKing.png");
     private final static ImageIcon selectedBlackPiece = new ImageIcon("resources/img/blackCheckerPieceSelected.png");
     private final static ImageIcon selectedBlackKing = new ImageIcon("resources/img/blackCheckerPieceKingSelected.png");
     private final static ImageIcon selectedRedPiece = new ImageIcon("resources/img/redCheckerPieceSelected.png");
@@ -30,7 +30,7 @@ public class Space extends JLabel {
 
     private void initializeLabel() {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        setPreferredSize(new Dimension(30, 30));
+        setPreferredSize(new Dimension(20, 20));
         if(isPlayable()) {
             setBackground(new Color(78, 49, 36));
         } else {
@@ -70,17 +70,26 @@ public class Space extends JLabel {
         if(piece.isKing()) {
             if ("black".equals(color)) {
                 setIcon(selected ? selectedBlackKing : blackKing);
+                if(CheckerBoardPanel.statusLabel != null) {
+                	CheckerBoardPanel.statusLabel.setText("Black king piece selected for movement");
+                }
             } else {
                 setIcon(selected ? selectedRedKing : redKing);
+                if(CheckerBoardPanel.statusLabel != null) {
+                	CheckerBoardPanel.statusLabel.setText("Red king piece selected for movement");
+                }
             }
         } else {
             if ("black".equals(color)) {
                 setIcon(selected ? selectedBlackPiece : blackPiece);
                 if(CheckerBoardPanel.statusLabel != null) {
-                CheckerBoardPanel.statusLabel.setText("Black piece selected for movement");
+                	CheckerBoardPanel.statusLabel.setText("Black piece selected for movement");
                 }
             } else {
                 setIcon(selected ? selectedRedPiece : redPiece);
+                if(CheckerBoardPanel.statusLabel != null) {
+                	CheckerBoardPanel.statusLabel.setText("Red piece selected for movement");
+                }
             }
         }
     }
