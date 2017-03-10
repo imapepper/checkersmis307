@@ -123,8 +123,8 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     private static Space isValidMove(Space space, int changeY, int changeX) {
-        int yCoordinate = space.getyCoordinate() - 1;
-        int xCoordinate = space.getxCoordinate() - 1;
+        int yCoordinate = space.getYCoordinate() - 1;
+        int xCoordinate = space.getXCoordinate() - 1;
         CheckerPiece piece = space.getPiece();
         String color = piece.getColor();
 
@@ -142,9 +142,5 @@ public class CheckerBoardPanel extends JPanel {
         } else {
             return null;
         }
-    }
-
-    public static Space[][] getSpaces() {
-        return spaces;
     }
 }

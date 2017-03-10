@@ -7,21 +7,21 @@ import java.awt.*;
 
 public class Space extends JLabel {
 
-    public final static ImageIcon blackPiece = new ImageIcon("resources/img/blackCheckerPiece80x80.png");
-    public final static ImageIcon blackKing = new ImageIcon("resources/img/blackCheckerPieceKing80x80.png");
-    public final static ImageIcon redPiece = new ImageIcon("resources/img/redCheckerPiece80x80.png");
-    public final static ImageIcon redKing = new ImageIcon("resources/img/redCheckerPieceKing80x80.png");
-    public final static ImageIcon selectedBlackPiece = new ImageIcon("resources/img/blackCheckerPieceSelected.png");
-    public final static ImageIcon selectedBlackKing = new ImageIcon("resources/img/blackCheckerPieceKingSelected.png");
-    public final static ImageIcon selectedRedPiece = new ImageIcon("resources/img/redCheckerPieceSelected.png");
-    public final static ImageIcon selectedRedKing = new ImageIcon("resources/img/redCheckerPieceKingSelected.png");
+    private final static ImageIcon blackPiece = new ImageIcon("resources/img/blackCheckerPiece80x80.png");
+    private final static ImageIcon blackKing = new ImageIcon("resources/img/blackCheckerPieceKing80x80.png");
+    private final static ImageIcon redPiece = new ImageIcon("resources/img/redCheckerPiece80x80.png");
+    private final static ImageIcon redKing = new ImageIcon("resources/img/redCheckerPieceKing80x80.png");
+    private final static ImageIcon selectedBlackPiece = new ImageIcon("resources/img/blackCheckerPieceSelected.png");
+    private final static ImageIcon selectedBlackKing = new ImageIcon("resources/img/blackCheckerPieceKingSelected.png");
+    private final static ImageIcon selectedRedPiece = new ImageIcon("resources/img/redCheckerPieceSelected.png");
+    private final static ImageIcon selectedRedKing = new ImageIcon("resources/img/redCheckerPieceKingSelected.png");
 
     private int xCoordinate;
     private int yCoordinate;
     private boolean isPlayable;
     private CheckerPiece piece;
 
-    public Space(int yCoordinate, int xCoordinate, boolean isPlayable) {
+    Space(int yCoordinate, int xCoordinate, boolean isPlayable) {
         this.yCoordinate = yCoordinate;
         this.xCoordinate = xCoordinate;
         this.isPlayable = isPlayable;
@@ -40,15 +40,15 @@ public class Space extends JLabel {
         setHorizontalAlignment(JLabel.CENTER);
     }
 
-    public int getxCoordinate() {
+    public int getXCoordinate() {
         return xCoordinate;
     }
 
-    public int getyCoordinate() {
+    public int getYCoordinate() {
         return yCoordinate;
     }
 
-    public boolean isPlayable() {
+    private boolean isPlayable() {
         return isPlayable;
     }
 
@@ -56,7 +56,7 @@ public class Space extends JLabel {
         return piece;
     }
 
-    public void setPiece(CheckerPiece piece) {
+    void setPiece(CheckerPiece piece) {
         this.piece = piece;
         String color = piece.getColor();
         if(("black".equals(color) && this.yCoordinate == 8) || ("red".equals(color) && this.yCoordinate == 1)) {
@@ -84,7 +84,7 @@ public class Space extends JLabel {
         }
     }
 
-    public CheckerPiece removePiece() {
+    CheckerPiece removePiece() {
         CheckerPiece removed = piece;
         piece = null;
         setIcon(null);
