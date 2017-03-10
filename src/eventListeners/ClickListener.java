@@ -73,28 +73,33 @@ public class ClickListener implements MouseListener {
 
     private static void jumpPiece(int fromY, int fromX, int toY, int toX) {
         CheckerBoardPanel.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
+        boolean isKing = selected.getPiece().isKing();
         resetSelected();
         selected = CheckerBoardPanel.movePiece(fromY, fromX, toY, toX);
-
-        selected.changeIcon(true);
-        Space[] newMoves = CheckerBoardPanel.getValidMoves(selected);
-        Space[] newValidMoves = new Space[4];
-        int i = 0;
-        for (Space newMove : newMoves) {
-            if(CheckerBoardPanel.isMoveAJump(selected.getYCoordinate(), selected.getXCoordinate(),
-                    newMove.getYCoordinate(), newMove.getXCoordinate())) {
-                newValidMoves[i] = newMove;
-                i++;
+        if(!isKing && selected.getPiece().isKing()) {
+            CheckerBoardPanel.changePlayer();
+        } else {
+            selected.changeIcon(true);
+            Space[] newMoves = CheckerBoardPanel.getValidMoves(selected);
+            Space[] newValidMoves = new Space[4];
+            int i = 0;
+            for (Space newMove : newMoves) {
+                if (CheckerBoardPanel.isMoveAJump(selected.getYCoordinate(), selected.getXCoordinate(),
+                        newMove.getYCoordinate(), newMove.getXCoordinate())) {
+                    newValidMoves[i] = newMove;
+                    i++;
+                }
+            }
+            newValidMoves = Arrays.copyOf(newValidMoves, i);
+            if (newValidMoves.length > 0) {
+                highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
+                validMoves = newValidMoves;
+                doubleJump = true;
+            } else {
+                CheckerBoardPanel.changePlayer();
             }
         }
-        newValidMoves = Arrays.copyOf(newValidMoves, i);
-        if(newValidMoves.length > 0) {
-            highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
-            validMoves = newValidMoves;
-            doubleJump = true;
-        } else {
-            CheckerBoardPanel.changePlayer();
-        }
+        CheckerBoardPanel.checkGameOver();
     }
 
     @Override

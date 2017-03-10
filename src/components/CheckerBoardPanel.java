@@ -14,6 +14,8 @@ public class CheckerBoardPanel extends JPanel {
     private static int numBlackPieces;
     private static int numRedPieces;
     static JLabel statusLabel;
+    private static JLabel blackPlayerStatus;
+    private static JLabel redPlayerStatus;
     public static String currentPlayer;
     public static boolean gameOver;
 
@@ -61,6 +63,10 @@ public class CheckerBoardPanel extends JPanel {
     	statusLabel = new JLabel("STATUS: Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	add(statusLabel, createConstraints(0, 0, 8));
+    	blackPlayerStatus = new JLabel("Black Pieces: " + numBlackPieces);
+    	add(blackPlayerStatus, createConstraints(1, 0, 1));
+    	redPlayerStatus = new JLabel("Red Pieces: " + numRedPieces);
+    	add(redPlayerStatus, createConstraints(2, 0, 1));
     }
     
     private void initializeBoardGUI() {
@@ -88,6 +94,11 @@ public class CheckerBoardPanel extends JPanel {
         return new GridBagConstraints(gridX, gridY, gridWidth, 1,
                 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 50, 50);
+    }
+
+    private static void updatePlayerStatus() {
+        blackPlayerStatus.setText("Black Pieces: " + numBlackPieces);
+        redPlayerStatus.setText("Red Pieces: " + numRedPieces);
     }
 
     public static Space[] getValidMoves(Space space) {
@@ -170,28 +181,34 @@ public class CheckerBoardPanel extends JPanel {
         CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
         if("black".equals(removedPiece.getColor())) {
             numBlackPieces--;
-            if(numBlackPieces == 0) {
-                statusLabel.setText("Red Wins!");
-                gameOver = true;
-            }
         } else {
             numRedPieces--;
-            if(numRedPieces == 0) {
-                statusLabel.setText("Black Wins!");
-                gameOver = true;
-            }
         }
+        updatePlayerStatus();
     }
     
     public static void changePlayer() {
         ClickListener.resetSelected();
         ClickListener.doubleJump = false;
-    	if("black".equals(currentPlayer)) {
-    		currentPlayer = "red";
-    		statusLabel.setText("Red's turn!");
-    	} else {
-    		currentPlayer = "black";
-    		statusLabel.setText("Black's turn!");
-    	}
+        if(!gameOver) {
+            if("black".equals(currentPlayer)) {
+                currentPlayer = "red";
+                statusLabel.setText("Red's turn!");
+            } else {
+                currentPlayer = "black";
+                statusLabel.setText("Black's turn!");
+            }
+        }
+    }
+
+    public static void checkGameOver() {
+        if(numBlackPieces == 0) {
+            statusLabel.setText("Red Wins!");
+            gameOver = true;
+        }
+        if(numRedPieces == 0) {
+            statusLabel.setText("Black Wins!");
+            gameOver = true;
+        }
     }
 }
