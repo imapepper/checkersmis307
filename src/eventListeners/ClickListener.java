@@ -13,7 +13,7 @@ public class ClickListener implements MouseListener {
 
     private static Space selected;
     private static Space[] validMoves;
-    private static boolean doubleJump;
+    public static boolean doubleJump;
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -30,9 +30,7 @@ public class ClickListener implements MouseListener {
                             jumpPiece(fromY, fromX, toY, toX);
                         } else {
                             CheckerBoardPanel.movePiece(fromY, fromX, toY, toX);
-                            resetSelected();
                             CheckerBoardPanel.changePlayer();
-                            doubleJump = false;
                         }
                         return;
                     }
@@ -56,13 +54,13 @@ public class ClickListener implements MouseListener {
         }
     }
 
-    private void highlightValidMoveSpaces(Space[] validMoves, Color color) {
+    private static void highlightValidMoveSpaces(Space[] validMoves, Color color) {
         for (Space validMove : validMoves) {
             validMove.setBackground(color);
         }
     }
 
-    private void resetSelected() {
+    public static void resetSelected() {
         if(selected != null && selected.getPiece() != null) {
             selected.changeIcon(false);
             selected = null;
@@ -73,10 +71,11 @@ public class ClickListener implements MouseListener {
         }
     }
 
-    private void jumpPiece(int fromY, int fromX, int toY, int toX) {
+    private static void jumpPiece(int fromY, int fromX, int toY, int toX) {
         CheckerBoardPanel.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
         resetSelected();
         selected = CheckerBoardPanel.movePiece(fromY, fromX, toY, toX);
+
         selected.changeIcon(true);
         Space[] newMoves = CheckerBoardPanel.getValidMoves(selected);
         Space[] newValidMoves = new Space[4];
@@ -94,9 +93,7 @@ public class ClickListener implements MouseListener {
             validMoves = newValidMoves;
             doubleJump = true;
         } else {
-            resetSelected();
             CheckerBoardPanel.changePlayer();
-            doubleJump = false;
         }
     }
 

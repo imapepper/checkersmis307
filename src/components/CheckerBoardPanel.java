@@ -18,6 +18,7 @@ public class CheckerBoardPanel extends JPanel {
     public static boolean gameOver;
 
     public CheckerBoardPanel() {
+        gameOver = false;
         numBlackPieces = 12;
         numRedPieces = 12;
         initializeSpaces();
@@ -89,37 +90,6 @@ public class CheckerBoardPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 50, 50);
     }
 
-    public static CheckerPiece removePiece(int fromY, int fromX) {
-        CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
-        if("black".equals(removedPiece.getColor())) {
-            numBlackPieces--;
-            if(numBlackPieces == 0) {
-                statusLabel.setText("Red Wins!");
-                gameOver = true;
-            }
-        } else {
-            numRedPieces--;
-            if(numRedPieces == 0) {
-                statusLabel.setText("Black Wins!");
-                gameOver = true;
-            }
-        }
-        return removedPiece;
-    }
-
-    public static Space movePiece(int fromY, int fromX, int toY, int toX) {
-        if(spaces[fromY - 1][fromX - 1].getPiece() == null) {
-            throw new IllegalArgumentException("There is no piece to move on that space");
-        }
-        if(spaces[toY - 1][toX - 1].getPiece() != null) {
-            throw new IllegalArgumentException("Space already has a piece");
-        }
-        CheckerPiece piece = removePiece(fromY, fromX);
-        Space newSpace = spaces[toY - 1][toX - 1];
-        newSpace.setPiece(piece);
-        return newSpace;
-    }
-
     public static Space[] getValidMoves(Space space) {
         if(space.getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
@@ -179,11 +149,43 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
 
+    public static Space movePiece(int fromY, int fromX, int toY, int toX) {
+        if(spaces[fromY - 1][fromX - 1].getPiece() == null) {
+            throw new IllegalArgumentException("There is no piece to move on that space");
+        }
+        if(spaces[toY - 1][toX - 1].getPiece() != null) {
+            throw new IllegalArgumentException("Space already has a piece");
+        }
+        CheckerPiece piece = spaces[fromY - 1][fromX - 1].removePiece();
+        Space newSpace = spaces[toY - 1][toX - 1];
+        newSpace.setPiece(piece);
+        return newSpace;
+    }
+
     public static boolean isMoveAJump(int fromY, int fromX, int toY, int toX) {
         return Math.abs(toY - fromY) == 2 && Math.abs(toX - fromX) == 2;
     }
+
+    public static void removePiece(int fromY, int fromX) {
+        CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
+        if("black".equals(removedPiece.getColor())) {
+            numBlackPieces--;
+            if(numBlackPieces == 0) {
+                statusLabel.setText("Red Wins!");
+                gameOver = true;
+            }
+        } else {
+            numRedPieces--;
+            if(numRedPieces == 0) {
+                statusLabel.setText("Black Wins!");
+                gameOver = true;
+            }
+        }
+    }
     
     public static void changePlayer() {
+        ClickListener.resetSelected();
+        ClickListener.doubleJump = false;
     	if("black".equals(currentPlayer)) {
     		currentPlayer = "red";
     		statusLabel.setText("Red's turn!");
