@@ -12,32 +12,16 @@ public class ClickListener implements MouseListener {
     private static Space selected;
     private static Space[] validMoves;
 
-    public static Space getSelected() {
-        return selected;
-    }
-
-    public static void setSelected(Space selected) {
-        ClickListener.selected = selected;
-    }
-
-    public static Space[] getValidMoves() {
-        return validMoves;
-    }
-
-    public static void setValidMoves(Space[] validMoves) {
-        ClickListener.validMoves = validMoves;
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
         Space space = (Space) e.getComponent();
         if(validMoves != null) {
             for (Space validMove : validMoves) {
                 if (space.equals(validMove)) {
-                    int selectedY = selected.getyCoordinate();
-                    int selectedX = selected.getxCoordinate();
-                    int moveY = validMove.getyCoordinate();
-                    int moveX = validMove.getxCoordinate();
+                    int selectedY = selected.getYCoordinate();
+                    int selectedX = selected.getXCoordinate();
+                    int moveY = validMove.getYCoordinate();
+                    int moveX = validMove.getXCoordinate();
                     if(Math.abs(moveY - selectedY) == 2 && Math.abs(moveX - selectedX) == 2) {
                         CheckerBoardPanel.removePiece((moveY + selectedY) / 2, (moveX + selectedX) / 2);
                     }
@@ -56,6 +40,8 @@ public class ClickListener implements MouseListener {
                 highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
                 validMoves = newValidMoves;
             }
+        } else {
+            resetSelected();
         }
     }
 
