@@ -91,7 +91,7 @@ public class CheckerBoardPanel extends JPanel {
         return spaces[fromY - 1][fromX - 1].removePiece();
     }
 
-    public static void movePiece(int fromY, int fromX, int toY, int toX) {
+    public static Space movePiece(int fromY, int fromX, int toY, int toX) {
         if(spaces[fromY - 1][fromX - 1].getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
         }
@@ -99,7 +99,9 @@ public class CheckerBoardPanel extends JPanel {
             throw new IllegalArgumentException("Space already has a piece");
         }
         CheckerPiece piece = removePiece(fromY, fromX);
-        spaces[toY - 1][toX - 1].setPiece(piece);
+        Space newSpace = spaces[toY - 1][toX - 1];
+        newSpace.setPiece(piece);
+        return newSpace;
     }
 
     public static Space[] getValidMoves(Space space) {
@@ -159,6 +161,10 @@ public class CheckerBoardPanel extends JPanel {
         } else {
             return null;
         }
+    }
+
+    public static boolean isMoveAJump(int fromY, int fromX, int toY, int toX) {
+        return Math.abs(toY - fromY) == 2 && Math.abs(toX - fromX) == 2;
     }
     
     public static void changePlayer() {
