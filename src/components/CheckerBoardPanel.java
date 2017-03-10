@@ -6,18 +6,21 @@ import objects.CheckerPiece;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Random;
 
 public class CheckerBoardPanel extends JPanel {
 
     private static Space[][] spaces;
     public static JLabel statusLabel;
     public static String status;
+    public static String currentPlayer;
 
     public CheckerBoardPanel() {
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeStatus();
         initializeBoardGUI();
+        initializePlayer();
     }
 
     private void initializeSpaces() {
@@ -48,7 +51,14 @@ public class CheckerBoardPanel extends JPanel {
             }
         }
     }
-
+    
+    private void initializeStatus() {
+    	status = "Initialized board";
+    	statusLabel = new JLabel("STATUS: " + status);
+    	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    	add(statusLabel, createConstraints(0, 0, 8));
+    }
+    
     private void initializeBoardGUI() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -59,11 +69,16 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
-    private void initializeStatus() {
-    	status = "Initialized board";
-    	statusLabel = new JLabel("STATUS: " + status);
-    	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    	add(statusLabel, createConstraints(0, 0, 8));
+    private void initializePlayer() {
+        int random = new Random().nextInt(2);
+        
+        if(random == 0) {
+        	currentPlayer = "black";
+        	statusLabel.setText("It is black's turn to move first.");
+        } else {
+        	currentPlayer = "red";
+        	statusLabel.setText("It is red's turn to move first.");
+        }
     }
 
     private GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth) {
@@ -144,5 +159,15 @@ public class CheckerBoardPanel extends JPanel {
         } else {
             return null;
         }
+    }
+    
+    public static void changePlayer() {
+    	if(currentPlayer.equals("black")) {
+    		currentPlayer = "red";
+    		statusLabel.setText("Red's turn!");
+    	} else {
+    		currentPlayer = "black";
+    		statusLabel.setText("Black's turn!");
+    	}
     }
 }

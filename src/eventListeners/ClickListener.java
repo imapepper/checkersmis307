@@ -2,6 +2,7 @@ package eventListeners;
 
 import components.CheckerBoardPanel;
 import components.Space;
+import objects.CheckerPiece;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -27,11 +28,13 @@ public class ClickListener implements MouseListener {
                     }
                     CheckerBoardPanel.movePiece(selectedY, selectedX, moveY, moveX);
                     resetSelected();
+                    CheckerBoardPanel.changePlayer();
                     return;
                 }
             }
         }
-        if(space.getPiece() != null) {
+        CheckerPiece piece;
+        if((piece = space.getPiece()) != null && piece.getColor().equals(CheckerBoardPanel.currentPlayer)) {
             if(!space.equals(selected)) {
                 resetSelected();
                 space.changeIcon(true);
