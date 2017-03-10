@@ -11,11 +11,15 @@ import java.util.Random;
 public class CheckerBoardPanel extends JPanel {
 
     private static Space[][] spaces;
-    public static JLabel statusLabel;
-    public static String status;
+    private static int numBlackPieces;
+    private static int numRedPieces;
+    static JLabel statusLabel;
     public static String currentPlayer;
+    public static boolean gameOver;
 
     public CheckerBoardPanel() {
+        numBlackPieces = 12;
+        numRedPieces = 12;
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeStatus();
@@ -53,8 +57,7 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     private void initializeStatus() {
-    	status = "Initialized board";
-    	statusLabel = new JLabel("STATUS: " + status);
+    	statusLabel = new JLabel("STATUS: Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	add(statusLabel, createConstraints(0, 0, 8));
     }
@@ -71,7 +74,6 @@ public class CheckerBoardPanel extends JPanel {
     
     private void initializePlayer() {
         int random = new Random().nextInt(2);
-        
         if(random == 0) {
         	currentPlayer = "black";
         	statusLabel.setText("It is black's turn to move first.");
@@ -88,7 +90,21 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     public static CheckerPiece removePiece(int fromY, int fromX) {
-        return spaces[fromY - 1][fromX - 1].removePiece();
+        CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
+        if("black".equals(removedPiece.getColor())) {
+            numBlackPieces--;
+            if(numBlackPieces == 0) {
+                statusLabel.setText("Red Wins!");
+                gameOver = true;
+            }
+        } else {
+            numRedPieces--;
+            if(numRedPieces == 0) {
+                statusLabel.setText("Black Wins!");
+                gameOver = true;
+            }
+        }
+        return removedPiece;
     }
 
     public static Space movePiece(int fromY, int fromX, int toY, int toX) {
@@ -168,7 +184,7 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     public static void changePlayer() {
-    	if(currentPlayer.equals("black")) {
+    	if("black".equals(currentPlayer)) {
     		currentPlayer = "red";
     		statusLabel.setText("Red's turn!");
     	} else {
