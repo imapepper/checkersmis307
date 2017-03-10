@@ -58,18 +58,23 @@ public class Space extends JLabel {
 
     public void setPiece(CheckerPiece piece) {
         this.piece = piece;
+        String color = piece.getColor();
+        if(("black".equals(color) && this.yCoordinate == 8) || ("red".equals(color) && this.yCoordinate == 1)) {
+            piece.setKing(true);
+        }
         changeIcon(false);
     }
 
     public void changeIcon(boolean selected) {
+        String color = piece.getColor();
         if(piece.isKing()) {
-            if ("black".equals(piece.getColor())) {
+            if ("black".equals(color)) {
                 setIcon(selected ? selectedBlackKing : blackKing);
             } else {
                 setIcon(selected ? selectedRedKing : redKing);
             }
         } else {
-            if ("black".equals(piece.getColor())) {
+            if ("black".equals(color)) {
                 setIcon(selected ? selectedBlackPiece : blackPiece);
                 CheckerBoardPanel.status = "Black piece selected for movement";
                 //CheckerBoardPanel.updateStatus();

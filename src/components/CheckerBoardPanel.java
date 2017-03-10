@@ -71,7 +71,7 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     public static CheckerPiece removePiece(int fromY, int fromX) {
-        return spaces[fromY][fromX].removePiece();
+        return spaces[fromY - 1][fromX - 1].removePiece();
     }
 
     public static void movePiece(int fromY, int fromX, int toY, int toX) {
@@ -81,7 +81,7 @@ public class CheckerBoardPanel extends JPanel {
         if(spaces[toY - 1][toX - 1].getPiece() != null) {
             throw new IllegalArgumentException("Space already has a piece");
         }
-        CheckerPiece piece = removePiece(fromY - 1, fromX - 1);
+        CheckerPiece piece = removePiece(fromY, fromX);
         spaces[toY - 1][toX - 1].setPiece(piece);
     }
 
@@ -134,7 +134,7 @@ public class CheckerBoardPanel extends JPanel {
             CheckerPiece newPiece;
             if((newPiece = newSpace.getPiece()) == null) {
                 return newSpace;
-            } else if(!color.equals(newPiece.getColor()) && (changeY < 2 && changeY > -2 && changeX < 2 && changeY > -2)) {
+            } else if(!color.equals(newPiece.getColor()) && Math.abs(changeY) < 2 && Math.abs(changeX) < 2) {
                 return isValidMove(space, changeY * 2, changeX * 2);
             } else {
                 return null;

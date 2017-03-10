@@ -34,8 +34,14 @@ public class ClickListener implements MouseListener {
         if(validMoves != null) {
             for (Space validMove : validMoves) {
                 if (space.equals(validMove)) {
-                    CheckerBoardPanel.movePiece(selected.getyCoordinate(), selected.getxCoordinate(),
-                            validMove.getyCoordinate(), validMove.getxCoordinate());
+                    int selectedY = selected.getyCoordinate();
+                    int selectedX = selected.getxCoordinate();
+                    int moveY = validMove.getyCoordinate();
+                    int moveX = validMove.getxCoordinate();
+                    if(Math.abs(moveY - selectedY) == 2 && Math.abs(moveX - selectedX) == 2) {
+                        CheckerBoardPanel.removePiece((moveY + selectedY) / 2, (moveX + selectedX) / 2);
+                    }
+                    CheckerBoardPanel.movePiece(selectedY, selectedX, moveY, moveX);
                     resetSelected();
                     return;
                 }
