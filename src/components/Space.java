@@ -76,8 +76,9 @@ public class Space extends JLabel {
         } else {
             if ("black".equals(color)) {
                 setIcon(selected ? selectedBlackPiece : blackPiece);
-                CheckerBoardPanel.status = "Black piece selected for movement";
-                //CheckerBoardPanel.updateStatus();
+                if(CheckerBoardPanel.statusLabel != null) {
+                CheckerBoardPanel.statusLabel.setText("Black piece selected for movement");
+                }
             } else {
                 setIcon(selected ? selectedRedPiece : redPiece);
             }
