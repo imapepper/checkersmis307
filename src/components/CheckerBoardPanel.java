@@ -93,16 +93,16 @@ public class CheckerBoardPanel extends JPanel {
     
     public static void initializeEndGame() {
        JFrame endGameFrame = new JFrame("Game Over!");
+       endGameFrame.setUndecorated(true);
        JButton exit = new JButton("Exit");
        JButton playAgain = new JButton("Play Again");
 
        endGameFrame.setSize(250, 75);
        endGameFrame.setVisible(true);
        endGameFrame.setLayout(new BorderLayout());
-       endGameFrame.add(exit, BorderLayout.CENTER);
+       endGameFrame.add(exit, BorderLayout.SOUTH);
        endGameFrame.add(playAgain, BorderLayout.NORTH);
        endGameFrame.setLocation(400, 350);
-       
     }
 
     private GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth) {
