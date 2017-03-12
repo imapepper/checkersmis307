@@ -1,5 +1,7 @@
 import components.CheckerBoardPanel;
 
+import java.util.Scanner;
+
 import javax.swing.*;
 
 public class Main {
@@ -11,5 +13,6 @@ public class Main {
         frame.setSize(800, 800);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
     }
 }

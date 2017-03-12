@@ -1,5 +1,6 @@
 package components;
 
+//import eventListeners.ButtonListener;
 import eventListeners.ClickListener;
 import objects.CheckerPiece;
 
@@ -60,7 +61,7 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     private void initializeStatus() {
-    	statusLabel = new JLabel("STATUS: Initialized board");
+    	statusLabel = new JLabel("Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	add(statusLabel, createConstraints(0, 0, 8));
     	blackPlayerStatus = new JLabel("Black Pieces: " + numBlackPieces);
@@ -88,6 +89,20 @@ public class CheckerBoardPanel extends JPanel {
         	currentPlayer = "red";
         	statusLabel.setText("It is red's turn to move first.");
         }
+    }
+    
+    public static void initializeEndGame() {
+       JFrame endGameFrame = new JFrame("Game Over!");
+       JButton exit = new JButton("Exit");
+       JButton playAgain = new JButton("Play Again");
+
+       endGameFrame.setSize(250, 75);
+       endGameFrame.setVisible(true);
+       endGameFrame.setLayout(new BorderLayout());
+       endGameFrame.add(exit, BorderLayout.CENTER);
+       endGameFrame.add(playAgain, BorderLayout.NORTH);
+       endGameFrame.setLocation(400, 350);
+       
     }
 
     private GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth) {
@@ -205,10 +220,12 @@ public class CheckerBoardPanel extends JPanel {
         if(numBlackPieces == 0) {
             statusLabel.setText("Red Wins!");
             gameOver = true;
+            initializeEndGame();
         }
         if(numRedPieces == 0) {
             statusLabel.setText("Black Wins!");
             gameOver = true;
+            initializeEndGame();
         }
     }
 }
