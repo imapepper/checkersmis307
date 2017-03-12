@@ -6,6 +6,8 @@ import objects.CheckerPiece;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -19,6 +21,7 @@ public class CheckerBoardPanel extends JPanel {
     private static JLabel redPlayerStatus;
     public static String currentPlayer;
     public static boolean gameOver;
+    static JFrame endGameFrame = new JFrame();
 
     public CheckerBoardPanel() {
         gameOver = false;
@@ -92,18 +95,32 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     public static void initializeEndGame() {
-       JFrame endGameFrame = new JFrame("Game Over!");
-       endGameFrame.setUndecorated(true);
-       JButton exit = new JButton("Exit");
-       JButton playAgain = new JButton("Play Again");
+        JButton exit = new JButton("Exit");
+        JButton playAgain = new JButton("Play Again");
+  
+        endGameFrame.setSize(250, 75);
+        endGameFrame.setVisible(true);
+        endGameFrame.setLayout(new BorderLayout());
+        endGameFrame.add(exit, BorderLayout.CENTER);
+        endGameFrame.add(exit, BorderLayout.SOUTH);
+        endGameFrame.add(playAgain, BorderLayout.NORTH);
+        endGameFrame.setLocation(400, 350);     
+        endGameFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        endGameFrame.setResizable(false);
 
-       endGameFrame.setSize(250, 75);
-       endGameFrame.setVisible(true);
-       endGameFrame.setLayout(new BorderLayout());
-       endGameFrame.add(exit, BorderLayout.SOUTH);
-       endGameFrame.add(playAgain, BorderLayout.NORTH);
-       endGameFrame.setLocation(400, 350);
-    }
+        exit.addActionListener(new ActionListener(){
+        	   public void actionPerformed(ActionEvent e){
+        		   System.exit(0);
+        	   }
+        	});
+        playAgain.addActionListener(new ActionListener(){
+     	   public void actionPerformed(ActionEvent e){
+     		   System.out.println("Need to add functionality!");
+     	   }
+     	});
+      }
+    
+    
 
     private GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth) {
         return new GridBagConstraints(gridX, gridY, gridWidth, 1,
@@ -219,11 +236,13 @@ public class CheckerBoardPanel extends JPanel {
     public static void checkGameOver() {
         if(numBlackPieces == 0) {
             statusLabel.setText("Red Wins!");
+            endGameFrame.setTitle("Red Wins!");
             gameOver = true;
             initializeEndGame();
         }
         if(numRedPieces == 0) {
             statusLabel.setText("Black Wins!");
+            endGameFrame.setTitle("Black Wins!");
             gameOver = true;
             initializeEndGame();
         }
