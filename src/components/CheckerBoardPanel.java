@@ -87,10 +87,10 @@ public class CheckerBoardPanel extends JPanel {
         int random = new Random().nextInt(2);
         if(random == 0) {
         	currentPlayer = "black";
-        	statusLabel.setText("It is black's turn to move first.");
+        	statusLabel.setText("Black moves first!");
         } else {
         	currentPlayer = "red";
-        	statusLabel.setText("It is red's turn to move first.");
+        	statusLabel.setText("Red moves first!");
         }
     }
     
@@ -101,7 +101,6 @@ public class CheckerBoardPanel extends JPanel {
         endGameFrame.setSize(250, 75);
         endGameFrame.setVisible(true);
         endGameFrame.setLayout(new BorderLayout());
-        endGameFrame.add(exit, BorderLayout.CENTER);
         endGameFrame.add(exit, BorderLayout.SOUTH);
         endGameFrame.add(playAgain, BorderLayout.NORTH);
         endGameFrame.setLocation(400, 350);     
@@ -115,11 +114,10 @@ public class CheckerBoardPanel extends JPanel {
         	});
         playAgain.addActionListener(new ActionListener(){
      	   public void actionPerformed(ActionEvent e){
-     		   System.out.println("Need to add functionality!");
+     		   endGameFrame.dispose();
      	   }
      	});
       }
-    
     
 
     private GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth) {
