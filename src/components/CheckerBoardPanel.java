@@ -4,10 +4,14 @@ package components;
 import eventListeners.ClickListener;
 import objects.CheckerPiece;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -95,6 +99,7 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     public static void initializeEndGame() {
+        playSoundEffect("resources/sounds/victory.wav");
         JButton exit = new JButton("Exit");
         JButton playAgain = new JButton("Play Again");
   
@@ -200,6 +205,7 @@ public class CheckerBoardPanel extends JPanel {
         CheckerPiece piece = spaces[fromY - 1][fromX - 1].removePiece();
         Space newSpace = spaces[toY - 1][toX - 1];
         newSpace.setPiece(piece);
+        playSoundEffect("resources/sounds/move.wav");
         return newSpace;
     }
 
@@ -243,6 +249,17 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.setTitle("Black Wins!");
             gameOver = true;
             initializeEndGame();
+        }
+    }
+
+    public static void playSoundEffect(String path) {
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(path));
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

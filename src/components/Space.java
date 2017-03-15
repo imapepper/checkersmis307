@@ -61,6 +61,7 @@ public class Space extends JLabel {
         String color = piece.getColor();
         if(("black".equals(color) && this.yCoordinate == 8) || ("red".equals(color) && this.yCoordinate == 1)) {
             piece.setKing(true);
+            CheckerBoardPanel.playSoundEffect("resources/sounds/king.wav");
         }
         changeIcon(false);
     }
