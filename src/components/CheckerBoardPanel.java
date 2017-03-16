@@ -2,32 +2,28 @@ package components;
 
 //import eventListeners.ButtonListener;
 import eventListeners.ClickListener;
+import main.Main;
 import objects.CheckerPiece;
+import utils.SoundPlayer;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 
 public class CheckerBoardPanel extends JPanel {
 
-    private static Space[][] spaces;
-    private static int numBlackPieces;
-    private static int numRedPieces;
-    static JLabel statusLabel;
-    private static JLabel blackPlayerStatus;
-    private static JLabel redPlayerStatus;
-    public static String currentPlayer;
-    public static boolean gameOver;
-    static JFrame endGameFrame = new JFrame();
+    private Space[][] spaces;
+    private int numBlackPieces;
+    private int numRedPieces;
+    JLabel statusLabel;
+    private JLabel blackPlayerStatus;
+    private JLabel redPlayerStatus;
+    public String currentPlayer;
+    public boolean gameOver;
+    private JFrame endGameFrame = new JFrame();
 
-    public CheckerBoardPanel() {
+    public void createNewBoard() {
         gameOver = false;
         numBlackPieces = 12;
         numRedPieces = 12;
@@ -98,30 +94,30 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
-    public static void initializeEndGame() {
-        playSoundEffect("resources/sounds/victory.wav");
-        JButton exit = new JButton("Exit");
+    private void initializeEndGame() {
+        SoundPlayer.victorySoundEffect();
         JButton playAgain = new JButton("Play Again");
+        JButton exit = new JButton("Exit");
   
         endGameFrame.setSize(250, 75);
         endGameFrame.setVisible(true);
         endGameFrame.setLayout(new BorderLayout());
-        endGameFrame.add(exit, BorderLayout.SOUTH);
         endGameFrame.add(playAgain, BorderLayout.NORTH);
+        endGameFrame.add(exit, BorderLayout.SOUTH);
         endGameFrame.setLocation(400, 350);     
         endGameFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         endGameFrame.setResizable(false);
 
-        exit.addActionListener(new ActionListener(){
-        	   public void actionPerformed(ActionEvent e){
-        		   System.exit(0);
-        	   }
-        	});
-        playAgain.addActionListener(new ActionListener(){
-     	   public void actionPerformed(ActionEvent e){
-     		   endGameFrame.dispose();
-     	   }
-     	});
+        playAgain.addActionListener(e -> {
+            CheckerBoardPanel checkerBoard = new CheckerBoardPanel();
+            checkerBoard.createNewBoard();
+            Main.frame.setContentPane(checkerBoard);
+            Main.frame.invalidate();
+            Main.frame.validate();
+            Main.checkerBoard = checkerBoard;
+            endGameFrame.dispose();
+        });
+        exit.addActionListener(e -> System.exit(0));
       }
     
 
@@ -131,12 +127,12 @@ public class CheckerBoardPanel extends JPanel {
                 new Insets(0, 0, 0, 0), 50, 50);
     }
 
-    private static void updatePlayerStatus() {
+    private void updatePlayerStatus() {
         blackPlayerStatus.setText("Black Pieces: " + numBlackPieces);
         redPlayerStatus.setText("Red Pieces: " + numRedPieces);
     }
 
-    public static Space[] getValidMoves(Space space) {
+    public Space[] getValidMoves(Space space) {
         if(space.getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
         }
@@ -173,7 +169,7 @@ public class CheckerBoardPanel extends JPanel {
         return Arrays.copyOf(openSpaces, i);
     }
 
-    private static Space isValidMove(Space space, int changeY, int changeX) {
+    private Space isValidMove(Space space, int changeY, int changeX) {
         int yCoordinate = space.getYCoordinate() - 1;
         int xCoordinate = space.getXCoordinate() - 1;
         CheckerPiece piece = space.getPiece();
@@ -195,7 +191,7 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
 
-    public static Space movePiece(int fromY, int fromX, int toY, int toX) {
+    public Space movePiece(int fromY, int fromX, int toY, int toX) {
         if(spaces[fromY - 1][fromX - 1].getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
         }
@@ -205,7 +201,7 @@ public class CheckerBoardPanel extends JPanel {
         CheckerPiece piece = spaces[fromY - 1][fromX - 1].removePiece();
         Space newSpace = spaces[toY - 1][toX - 1];
         newSpace.setPiece(piece);
-        playSoundEffect("resources/sounds/move.wav");
+        SoundPlayer.moveSoundEffect();
         return newSpace;
     }
 
@@ -213,7 +209,7 @@ public class CheckerBoardPanel extends JPanel {
         return Math.abs(toY - fromY) == 2 && Math.abs(toX - fromX) == 2;
     }
 
-    public static void removePiece(int fromY, int fromX) {
+    public void removePiece(int fromY, int fromX) {
         CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
         if("black".equals(removedPiece.getColor())) {
             numBlackPieces--;
@@ -223,7 +219,7 @@ public class CheckerBoardPanel extends JPanel {
         updatePlayerStatus();
     }
     
-    public static void changePlayer() {
+    public void changePlayer() {
         ClickListener.resetSelected();
         ClickListener.doubleJump = false;
         if(!gameOver) {
@@ -237,7 +233,7 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
 
-    public static void checkGameOver() {
+    public void checkGameOver() {
         if(numBlackPieces == 0) {
             statusLabel.setText("Red Wins!");
             endGameFrame.setTitle("Red Wins!");
@@ -249,17 +245,6 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.setTitle("Black Wins!");
             gameOver = true;
             initializeEndGame();
-        }
-    }
-
-    public static void playSoundEffect(String path) {
-        try {
-            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(path));
-            Clip clip = AudioSystem.getClip();
-            clip.open(ais);
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

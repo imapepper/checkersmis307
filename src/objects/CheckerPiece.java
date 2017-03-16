@@ -17,7 +17,7 @@ public class CheckerPiece {
         return isKing;
     }
 
-    public void setKing(boolean king) {
-        isKing = king;
+    public void setKing() {
+        isKing = true;
     }
 }

@@ -2,6 +2,7 @@ package eventListeners;
 
 import components.CheckerBoardPanel;
 import components.Space;
+import main.Main;
 import objects.CheckerPiece;
 
 import java.awt.*;
@@ -17,7 +18,7 @@ public class ClickListener implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(!CheckerBoardPanel.gameOver) {
+        if(!Main.checkerBoard.gameOver) {
             Space space = (Space) e.getComponent();
             if (validMoves != null) {
                 for (Space validMove : validMoves) {
@@ -29,8 +30,8 @@ public class ClickListener implements MouseListener {
                         if (CheckerBoardPanel.isMoveAJump(fromY, fromX, toY, toX)) {
                             jumpPiece(fromY, fromX, toY, toX);
                         } else {
-                            CheckerBoardPanel.movePiece(fromY, fromX, toY, toX);
-                            CheckerBoardPanel.changePlayer();
+                            Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
+                            Main.checkerBoard.changePlayer();
                         }
                         return;
                     }
@@ -38,12 +39,12 @@ public class ClickListener implements MouseListener {
             }
             if (!doubleJump) {
                 CheckerPiece piece;
-                if ((piece = space.getPiece()) != null && piece.getColor().equals(CheckerBoardPanel.currentPlayer)) {
+                if ((piece = space.getPiece()) != null && piece.getColor().equals(Main.checkerBoard.currentPlayer)) {
                     if (!space.equals(selected)) {
                         resetSelected();
                         space.changeIcon(true);
                         selected = space;
-                        Space[] newValidMoves = CheckerBoardPanel.getValidMoves((Space) e.getComponent());
+                        Space[] newValidMoves = Main.checkerBoard.getValidMoves((Space) e.getComponent());
                         highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
                         validMoves = newValidMoves;
                     }
@@ -72,15 +73,15 @@ public class ClickListener implements MouseListener {
     }
 
     private static void jumpPiece(int fromY, int fromX, int toY, int toX) {
-        CheckerBoardPanel.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
+        Main.checkerBoard.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
         boolean isKing = selected.getPiece().isKing();
         resetSelected();
-        selected = CheckerBoardPanel.movePiece(fromY, fromX, toY, toX);
+        selected = Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
         if(!isKing && selected.getPiece().isKing()) {
-            CheckerBoardPanel.changePlayer();
+            Main.checkerBoard.changePlayer();
         } else {
             selected.changeIcon(true);
-            Space[] newMoves = CheckerBoardPanel.getValidMoves(selected);
+            Space[] newMoves = Main.checkerBoard.getValidMoves(selected);
             Space[] newValidMoves = new Space[4];
             int i = 0;
             for (Space newMove : newMoves) {
@@ -96,10 +97,10 @@ public class ClickListener implements MouseListener {
                 validMoves = newValidMoves;
                 doubleJump = true;
             } else {
-                CheckerBoardPanel.changePlayer();
+                Main.checkerBoard.changePlayer();
             }
         }
-        CheckerBoardPanel.checkGameOver();
+        Main.checkerBoard.checkGameOver();
     }
 
     @Override

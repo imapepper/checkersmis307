@@ -1,6 +1,8 @@
 package components;
 
+import main.Main;
 import objects.CheckerPiece;
+import utils.SoundPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,9 +61,10 @@ public class Space extends JLabel {
     void setPiece(CheckerPiece piece) {
         this.piece = piece;
         String color = piece.getColor();
-        if(("black".equals(color) && this.yCoordinate == 8) || ("red".equals(color) && this.yCoordinate == 1)) {
-            piece.setKing(true);
-            CheckerBoardPanel.playSoundEffect("resources/sounds/king.wav");
+        if(!piece.isKing() && (("black".equals(color) && this.yCoordinate == 8) ||
+                ("red".equals(color) && this.yCoordinate == 1))) {
+            piece.setKing();
+            SoundPlayer.kingSoundEffect();
         }
         changeIcon(false);
     }
@@ -71,25 +74,25 @@ public class Space extends JLabel {
         if(piece.isKing()) {
             if ("black".equals(color)) {
                 setIcon(selected ? selectedBlackKing : blackKing);
-                if(CheckerBoardPanel.statusLabel != null) {
-                	CheckerBoardPanel.statusLabel.setText("Black king piece selected for movement");
+                if(Main.checkerBoard.statusLabel != null) {
+                    Main.checkerBoard.statusLabel.setText("Black king piece selected for movement");
                 }
             } else {
                 setIcon(selected ? selectedRedKing : redKing);
-                if(CheckerBoardPanel.statusLabel != null) {
-                	CheckerBoardPanel.statusLabel.setText("Red king piece selected for movement");
+                if(Main.checkerBoard.statusLabel != null) {
+                    Main.checkerBoard.statusLabel.setText("Red king piece selected for movement");
                 }
             }
         } else {
             if ("black".equals(color)) {
                 setIcon(selected ? selectedBlackPiece : blackPiece);
-                if(CheckerBoardPanel.statusLabel != null) {
-                	CheckerBoardPanel.statusLabel.setText("Black piece selected for movement");
+                if(Main.checkerBoard.statusLabel != null) {
+                    Main.checkerBoard.statusLabel.setText("Black piece selected for movement");
                 }
             } else {
                 setIcon(selected ? selectedRedPiece : redPiece);
-                if(CheckerBoardPanel.statusLabel != null) {
-                	CheckerBoardPanel.statusLabel.setText("Red piece selected for movement");
+                if(Main.checkerBoard.statusLabel != null) {
+                    Main.checkerBoard.statusLabel.setText("Red piece selected for movement");
                 }
             }
         }
