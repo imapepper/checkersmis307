@@ -102,18 +102,17 @@ public class CheckerBoardPanel extends JPanel {
     	menuBar = new JMenuBar();
     	JMenu settings = new JMenu("Settings");
     	menuBar.add(settings);
-    	JToggleButton toggleSounds = new JToggleButton("Sounds: ON");
-    	JToggleButton toggleJumps = new JToggleButton("Forced Jumps: ON");
-    	
+    	JCheckBox toggleSounds = new JCheckBox("Sounds?");
+    	JCheckBox toggleJumps = new JCheckBox("Forced Jumps?");
+    	toggleSounds.setSelected(true);
+    	toggleJumps.setSelected(true);
     	settings.add(toggleJumps);
     	toggleJumps.addActionListener(e -> {
-    		JToggleButton toggle2 = (JToggleButton)e.getSource();
-    		if(toggle2.isSelected()) {
-    			forceJumps = false;
-    			toggleJumps.setText("Forced Jumps: OFF");
-    		} else {
+    		JCheckBox toggle = (JCheckBox)e.getSource();
+    		if(toggle.isSelected()) {
     			forceJumps = true;
-    			toggleJumps.setText("Forced Jumps: ON");
+    		} else {
+    			forceJumps = false;
     		}
     	});
     	
@@ -121,11 +120,9 @@ public class CheckerBoardPanel extends JPanel {
     	toggleSounds.addActionListener(e -> {
     		JToggleButton toggle = (JToggleButton)e.getSource();
     		if(toggle.isSelected()) {
-    			sounds = false;
-    			toggleSounds.setText("Sounds: OFF");
-    		} else {
     			sounds = true;
-    			toggleSounds.setText("Sounds: ON");
+    		} else {
+    			sounds = false;
     		}
     	});
     }
