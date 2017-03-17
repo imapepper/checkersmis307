@@ -19,9 +19,11 @@ public class CheckerBoardPanel extends JPanel {
     JLabel statusLabel;
     private JLabel blackPlayerStatus;
     private JLabel redPlayerStatus;
+    private JLabel timePlayed;
     public String currentPlayer;
     public boolean gameOver;
     private JFrame endGameFrame = new JFrame();
+    public JMenuBar menuBar = new JMenuBar();
 
     public void createNewBoard() {
         gameOver = false;
@@ -32,6 +34,7 @@ public class CheckerBoardPanel extends JPanel {
         initializeStatus();
         initializeBoardGUI();
         initializePlayer();
+        initializeMenu();
     }
 
     private void initializeSpaces() {
@@ -94,6 +97,17 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
+    private void initializeMenu() {
+    	menuBar = new JMenuBar();
+    	JMenu settings = new JMenu("Settings");
+    	menuBar.add(settings);
+    	
+    	JMenuItem forceJumps = new JMenuItem("Force jumps");
+    	JMenuItem disableSounds = new JMenuItem("Disable sounds");
+    	settings.add(forceJumps);
+    	settings.add(disableSounds);
+    }
+    
     private void initializeEndGame() {
         SoundPlayer.victorySoundEffect();
         JButton playAgain = new JButton("Play Again");
@@ -118,8 +132,7 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.dispose();
         });
         exit.addActionListener(e -> System.exit(0));
-      }
-    
+      } 
 
     private GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth) {
         return new GridBagConstraints(gridX, gridY, gridWidth, 1,
