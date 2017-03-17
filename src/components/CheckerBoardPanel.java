@@ -19,7 +19,8 @@ public class CheckerBoardPanel extends JPanel {
     JLabel statusLabel;
     private JLabel blackPlayerStatus;
     private JLabel redPlayerStatus;
-    private JLabel timePlayed;
+    public static boolean sounds = true;
+    public static boolean forceJumps = true;
     public String currentPlayer;
     public boolean gameOver;
     private JFrame endGameFrame = new JFrame();
@@ -101,11 +102,32 @@ public class CheckerBoardPanel extends JPanel {
     	menuBar = new JMenuBar();
     	JMenu settings = new JMenu("Settings");
     	menuBar.add(settings);
+    	JToggleButton toggleSounds = new JToggleButton("Sounds: ON");
+    	JToggleButton toggleJumps = new JToggleButton("Forced Jumps: ON");
     	
-    	JMenuItem forceJumps = new JMenuItem("Force jumps");
-    	JMenuItem disableSounds = new JMenuItem("Disable sounds");
-    	settings.add(forceJumps);
-    	settings.add(disableSounds);
+    	settings.add(toggleJumps);
+    	toggleJumps.addActionListener(e -> {
+    		JToggleButton toggle2 = (JToggleButton)e.getSource();
+    		if(toggle2.isSelected()) {
+    			forceJumps = false;
+    			toggleJumps.setText("Forced Jumps: OFF");
+    		} else {
+    			forceJumps = true;
+    			toggleJumps.setText("Forced Jumps: ON");
+    		}
+    	});
+    	
+    	settings.add(toggleSounds);
+    	toggleSounds.addActionListener(e -> {
+    		JToggleButton toggle = (JToggleButton)e.getSource();
+    		if(toggle.isSelected()) {
+    			sounds = false;
+    			toggleSounds.setText("Sounds: OFF");
+    		} else {
+    			sounds = true;
+    			toggleSounds.setText("Sounds: ON");
+    		}
+    	});
     }
     
     private void initializeEndGame() {

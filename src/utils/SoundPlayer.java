@@ -3,6 +3,9 @@ package utils;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+
+import components.CheckerBoardPanel;
+
 import java.io.File;
 
 public abstract class SoundPlayer {
@@ -21,10 +24,12 @@ public abstract class SoundPlayer {
 
     private static void playSoundEffect(String path) {
         try {
-            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(path));
-            Clip clip = AudioSystem.getClip();
-            clip.open(ais);
-            clip.start();
+        	if(CheckerBoardPanel.sounds) {
+        		AudioInputStream ais = AudioSystem.getAudioInputStream(new File(path));
+        		Clip clip = AudioSystem.getClip();
+        		clip.open(ais);
+        		clip.start();
+        	}
         } catch (Exception e) {
             e.printStackTrace();
         }
