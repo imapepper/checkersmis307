@@ -4,11 +4,24 @@ import components.CheckerBoardPanel;
 
 import javax.swing.*;
 
+/**
+ * Runnable class for program and GUI
+ *
+ * @author Chase Erickson
+ * @author Joseph Hage
+ * @author Anthony Tuel
+ * 2017-03-06
+ */
 public class Main {
 
     public static JFrame frame;
     public static CheckerBoardPanel checkerBoard;
 
+    /**
+     * Main method for program and GUI
+     *
+     * @param args arguments to run main with
+     */
     public static void main(String[] args) {
         frame = new JFrame();
         checkerBoard = new CheckerBoardPanel();

@@ -1,7 +1,7 @@
 package components;
 
 //import eventListeners.ButtonListener;
-import eventListeners.ClickListener;
+import eventListeners.SpaceClickListener;
 import main.Main;
 import objects.CheckerPiece;
 import utils.SoundPlayer;
@@ -11,20 +11,30 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Class extending JPanel to act as a GUI component.
+ * Manages the CheckerBoard for the checkers game as well as most GUI components
+ *
+ * @author Chase Erickson
+ * @author Joseph Hage
+ * @author Anthony Tuel
+ * 2017-03-06
+ */
 public class CheckerBoardPanel extends JPanel {
 
     private Space[][] spaces;
     private int numBlackPieces;
     private int numRedPieces;
-    JLabel statusLabel;
     private JLabel blackPlayerStatus;
     private JLabel redPlayerStatus;
-    public static boolean sounds = true;
-    public static boolean forceJumps = true;
+    private JFrame endGameFrame = new JFrame();
+    JLabel statusLabel;
     public String currentPlayer;
     public boolean gameOver;
-    private JFrame endGameFrame = new JFrame();
     public JMenuBar menuBar = new JMenuBar();
+
+    public static boolean sounds = true;
+    public static boolean forceJumps = true;
 
     public void createNewBoard() {
         gameOver = false;
@@ -81,7 +91,7 @@ public class CheckerBoardPanel extends JPanel {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Space space = spaces[i][j];
-                space.addMouseListener(new ClickListener());
+                space.addMouseListener(new SpaceClickListener());
                 add(space, createConstraints(i + 1, j + 1, 1));
             }
         }
@@ -252,8 +262,8 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     public void changePlayer() {
-        ClickListener.resetSelected();
-        ClickListener.doubleJump = false;
+        SpaceClickListener.resetSelected();
+        SpaceClickListener.doubleJump = false;
         if(!gameOver) {
             if("black".equals(currentPlayer)) {
                 currentPlayer = "red";

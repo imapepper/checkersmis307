@@ -10,7 +10,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
 
-public class ClickListener implements MouseListener {
+/**
+ * Event listener class that extends MouseListener to interact with GUI Space components.
+ * Methods are used to move a CheckerPiece between Space components.
+ *
+ * @author Chase Erickson
+ * @author Joseph Hage
+ * @author Anthony Tuel
+ * 2017-03-10
+ */
+public class SpaceClickListener implements MouseListener {
 
     private static Space selected;
     private static Space[] validMoves;
@@ -103,21 +112,41 @@ public class ClickListener implements MouseListener {
         Main.checkerBoard.checkGameOver();
     }
 
+    /**
+     * Required implementation method. Not used
+     *
+     * @param e MouseEvent object. Not used
+     */
     @Override
     public void mousePressed(MouseEvent e) {
 
     }
 
+    /**
+     * Required implementation method. Not used
+     *
+     * @param e MouseEvent object. Not used
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
 
     }
 
+    /**
+     * Required implementation method. Not used
+     *
+     * @param e MouseEvent object. Not used
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
 
     }
 
+    /**
+     * Required implementation method. Not used
+     *
+     * @param e MouseEvent object. Not used
+     */
     @Override
     public void mouseExited(MouseEvent e) {
 
