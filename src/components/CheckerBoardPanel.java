@@ -211,10 +211,10 @@ public class CheckerBoardPanel extends JPanel {
         if(!gameOver) {
             if(currentPlayer == 1) {
                 currentPlayer = 2;
-                statusLabel.setText("Player 2's turn!");
+                statusLabel.setText("Player 2\'s turn!");
             } else {
                 currentPlayer = 1;
-                statusLabel.setText("Player 1's turn!");
+                statusLabel.setText("Player 1\'s turn!");
             }
         }
     }

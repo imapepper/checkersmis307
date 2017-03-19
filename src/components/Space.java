@@ -71,8 +71,12 @@ public class Space extends JLabel {
         boolean isKing = piece.isKing();
         setIcon(GUIStyles.choosePieceIcon(player, isKing, selected));
         if(Main.checkerBoard.statusLabel != null) {
-            Main.checkerBoard.statusLabel.setText("Player " + player + (isKing ? " king ": " ")
-                    + "piece selected for movement");
+            if(selected) {
+                Main.checkerBoard.statusLabel.setText("Player " + player + " selected a" + (isKing ? " king " : " ")
+                        + "piece for movement");
+            } else {
+                Main.checkerBoard.statusLabel.setText("Player " + player + "\'s turn!");
+            }
         }
     }
 
