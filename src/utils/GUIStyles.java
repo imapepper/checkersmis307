@@ -35,8 +35,8 @@ public abstract class GUIStyles {
                     }
                     CheckerPiece piece;
                     if ((piece = space.getPiece()) != null) {
-                        space.setIcon(choosePieceIcon(piece.getPlayer(), piece.isKing(),
-                                space.equals(SpaceClickListener.selected)));
+                        space.setIcon(choosePieceIcon(piece.getPlayer(), space.equals(SpaceClickListener.selected),
+                                piece.isKing()));
                     }
                 }
             }
@@ -48,20 +48,16 @@ public abstract class GUIStyles {
         if(!blackLightModeEnabled) {
             return isPlayable ? new Color(78, 49, 36) : new Color(212, 164, 114);
         } else {
-            return isPlayable ? new Color(0, 0, 0) : new Color(255, 255, 255); // TODO choose black light background colors
+            return isPlayable ? new Color(0, 0, 0) : new Color(28, 232, 255);
         }
     }
 
     public static Color chooseSpaceHighlightColor() {
-        return !blackLightModeEnabled ? new Color(255, 255, 255) : new Color(170, 255, 1);
+        return !blackLightModeEnabled ? new Color(255, 255, 255) : new Color(26, 255, 22);
     }
 
-    public static ImageIcon choosePieceIcon(int player, boolean isKing, boolean selected) {
-        if(!blackLightModeEnabled) {
-            return new ImageIcon("resources/img/player"+player+"CheckerPiece" + (isKing ? "King" : "") +
-                    (selected ? "Selected" : "") + ".png");
-        } else {
-            return new ImageIcon(""); // TODO choose black light piece images
-        }
+    public static ImageIcon choosePieceIcon(int player, boolean selected, boolean isKing) {
+        return new ImageIcon("resources/img/p" + player + (selected ? "Selected" : "") +
+                (isKing ? "King" : "") + "Piece" + (blackLightModeEnabled ? "BL" : "") + ".png");
     }
 }

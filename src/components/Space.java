@@ -69,7 +69,7 @@ public class Space extends JLabel {
     public void changeIcon(boolean selected) {
         int player = piece.getPlayer();
         boolean isKing = piece.isKing();
-        setIcon(GUIStyles.choosePieceIcon(player, isKing, selected));
+        setIcon(GUIStyles.choosePieceIcon(player, selected, isKing));
         if(Main.checkerBoard.statusLabel != null) {
             if(selected) {
                 Main.checkerBoard.statusLabel.setText("Player " + player + " selected a" + (isKing ? " king " : " ")
