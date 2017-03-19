@@ -1,5 +1,7 @@
 package objects;
 
+import components.Space;
+
 /**
  * Class that represents a CheckerPiece object.
  * Each CheckerPiece has a String player and a boolean king status
@@ -12,6 +14,7 @@ package objects;
 public class CheckerPiece {
     private int player;
     private boolean isKing;
+    private Space[] validMoves;
 
     /**
      * CheckerPiece constructor; isKing is always false initially
@@ -48,5 +51,13 @@ public class CheckerPiece {
      */
     public void setKing() {
         isKing = true;
+    }
+
+    public Space[] getValidMoves() {
+        return validMoves;
+    }
+
+    public void setValidMoves(Space[] validMoves) {
+        this.validMoves = validMoves;
     }
 }

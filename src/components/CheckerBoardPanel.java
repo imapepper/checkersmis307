@@ -50,8 +50,9 @@ public class CheckerBoardPanel extends JPanel {
         setLayout(new GridBagLayout());
         initializeStatus();
         initializeBoardGUI();
-        initializePlayer();
+        decideWhoMovesFirst();
         initializeMenu();
+        Moves.findAllMovesForPlayer(currentPlayer);
     }
 
     private void initializeSpaces() {
@@ -103,7 +104,7 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
-    private void initializePlayer() {
+    private void decideWhoMovesFirst() {
         int random = new Random().nextInt(2);
         if(random == 0) {
         	currentPlayer = 1;
@@ -150,7 +151,6 @@ public class CheckerBoardPanel extends JPanel {
         JButton playAgain = new JButton("Play Again");
         JButton exit = new JButton("Exit");
 
-        endGameFrame = new JFrame();
         endGameFrame.setSize(250, 75);
         endGameFrame.setVisible(true);
         endGameFrame.setLayout(new BorderLayout());
@@ -163,6 +163,7 @@ public class CheckerBoardPanel extends JPanel {
         playAgain.addActionListener(e -> {
             CheckerBoardPanel checkerBoard = new CheckerBoardPanel();
             checkerBoard.createNewBoard();
+            Main.frame.remove(this);
             Main.frame.setContentPane(checkerBoard);
             Main.frame.invalidate();
             Main.frame.validate();
@@ -199,7 +200,7 @@ public class CheckerBoardPanel extends JPanel {
 
     public void removePiece(int fromY, int fromX) {
         CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
-        if(currentPlayer == removedPiece.getPlayer()) {
+        if(removedPiece.getPlayer() == 1) {
             numPlayer1Pieces--;
         } else {
             numPlayer2Pieces--;
@@ -217,17 +218,20 @@ public class CheckerBoardPanel extends JPanel {
                 statusLabel.setText("Player 1\'s turn!");
             }
         }
+        Moves.findAllMovesForPlayer(currentPlayer);
     }
 
     public void checkGameOver() {
         if(numPlayer1Pieces == 0) {
             statusLabel.setText("Player 2 Wins!");
+            endGameFrame = new JFrame();
             endGameFrame.setTitle("Player 2 Wins!");
             gameOver = true;
             displayEndGameOptions();
         }
         if(numPlayer2Pieces == 0) {
             statusLabel.setText("Player 1 Wins!");
+            endGameFrame = new JFrame();
             endGameFrame.setTitle("Player 1 Wins!");
             gameOver = true;
             displayEndGameOptions();

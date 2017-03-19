@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Utility class to manage image file locations
+ * Utility class to manage image file locations and background colors
  *
  * @author Chase Erickson
  * @author Joseph Hage
