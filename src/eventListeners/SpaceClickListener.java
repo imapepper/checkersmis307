@@ -1,11 +1,11 @@
 package eventListeners;
 
-import components.CheckerBoardPanel;
 import components.Space;
 import main.Main;
 import objects.CheckerPiece;
+import utils.GUIStyles;
+import utils.Moves;
 
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -23,11 +23,11 @@ public class SpaceClickListener implements MouseListener {
 
     private static Space selected;
     private static Space[] validMoves;
-    public static boolean doubleJump;
+    private static boolean doubleJump;
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(!Main.checkerBoard.gameOver) {
+        if (!Main.checkerBoard.gameOver) {
             Space space = (Space) e.getComponent();
             if (validMoves != null) {
                 for (Space validMove : validMoves) {
@@ -36,11 +36,11 @@ public class SpaceClickListener implements MouseListener {
                         int fromX = selected.getXCoordinate();
                         int toY = validMove.getYCoordinate();
                         int toX = validMove.getXCoordinate();
-                        if (CheckerBoardPanel.isMoveAJump(fromY, fromX, toY, toX)) {
+                        if (Moves.isMoveAJump(fromY, fromX, toY, toX)) {
                             jumpPiece(fromY, fromX, toY, toX);
                         } else {
                             Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
-                            Main.checkerBoard.changePlayer();
+                            changePlayer();
                         }
                         return;
                     }
@@ -48,13 +48,13 @@ public class SpaceClickListener implements MouseListener {
             }
             if (!doubleJump) {
                 CheckerPiece piece;
-                if ((piece = space.getPiece()) != null && piece.getColor().equals(Main.checkerBoard.currentPlayer)) {
+                if ((piece = space.getPiece()) != null && piece.getPlayer() == Main.checkerBoard.currentPlayer) {
                     if (!space.equals(selected)) {
                         resetSelected();
                         space.changeIcon(true);
                         selected = space;
-                        Space[] newValidMoves = Main.checkerBoard.getValidMoves((Space) e.getComponent());
-                        highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
+                        Space[] newValidMoves = Moves.getValidMoves((Space) e.getComponent());
+                        highlightValidMoveSpaces(newValidMoves, true);
                         validMoves = newValidMoves;
                     }
                 } else {
@@ -64,19 +64,20 @@ public class SpaceClickListener implements MouseListener {
         }
     }
 
-    private static void highlightValidMoveSpaces(Space[] validMoves, Color color) {
+    private static void highlightValidMoveSpaces(Space[] validMoves, boolean highlighted) {
         for (Space validMove : validMoves) {
-            validMove.setBackground(color);
+            validMove.setBackground(highlighted ? GUIStyles.chooseSpaceHighlightColor() :
+                    GUIStyles.chooseSpaceBackgroundColor(true));
         }
     }
 
-    public static void resetSelected() {
-        if(selected != null && selected.getPiece() != null) {
+    private static void resetSelected() {
+        if (selected != null && selected.getPiece() != null) {
             selected.changeIcon(false);
             selected = null;
         }
-        if(validMoves != null) {
-            highlightValidMoveSpaces(validMoves, new Color(78, 49, 36));
+        if (validMoves != null) {
+            highlightValidMoveSpaces(validMoves, false);
             validMoves = null;
         }
     }
@@ -86,15 +87,15 @@ public class SpaceClickListener implements MouseListener {
         boolean isKing = selected.getPiece().isKing();
         resetSelected();
         selected = Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
-        if(!isKing && selected.getPiece().isKing()) {
-            Main.checkerBoard.changePlayer();
+        if (!isKing && selected.getPiece().isKing()) {
+            changePlayer();
         } else {
             selected.changeIcon(true);
-            Space[] newMoves = Main.checkerBoard.getValidMoves(selected);
+            Space[] newMoves = Moves.getValidMoves(selected);
             Space[] newValidMoves = new Space[4];
             int i = 0;
             for (Space newMove : newMoves) {
-                if (CheckerBoardPanel.isMoveAJump(selected.getYCoordinate(), selected.getXCoordinate(),
+                if (Moves.isMoveAJump(selected.getYCoordinate(), selected.getXCoordinate(),
                         newMove.getYCoordinate(), newMove.getXCoordinate())) {
                     newValidMoves[i] = newMove;
                     i++;
@@ -102,14 +103,20 @@ public class SpaceClickListener implements MouseListener {
             }
             newValidMoves = Arrays.copyOf(newValidMoves, i);
             if (newValidMoves.length > 0) {
-                highlightValidMoveSpaces(newValidMoves, new Color(255, 255, 255));
+                highlightValidMoveSpaces(newValidMoves, true);
                 validMoves = newValidMoves;
                 doubleJump = true;
             } else {
-                Main.checkerBoard.changePlayer();
+                changePlayer();
             }
         }
         Main.checkerBoard.checkGameOver();
+    }
+
+    private static void changePlayer() {
+        resetSelected();
+        doubleJump = false;
+        Main.checkerBoard.changePlayer();
     }
 
     /**

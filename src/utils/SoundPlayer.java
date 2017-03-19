@@ -1,7 +1,5 @@
 package utils;
 
-import components.CheckerBoardPanel;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -16,6 +14,8 @@ import java.io.File;
  * 2017-03-15
  */
 public abstract class SoundPlayer {
+
+    public static boolean soundsEnabled;
 
     /**
      * Sound file for when a piece turns into a king
@@ -45,7 +45,7 @@ public abstract class SoundPlayer {
      */
     private static void playSoundEffect(String path) {
         try {
-        	if(CheckerBoardPanel.sounds) {
+        	if(soundsEnabled) {
         		AudioInputStream ais = AudioSystem.getAudioInputStream(new File(path));
         		Clip clip = AudioSystem.getClip();
         		clip.open(ais);

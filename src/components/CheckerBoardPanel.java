@@ -4,11 +4,12 @@ package components;
 import eventListeners.SpaceClickListener;
 import main.Main;
 import objects.CheckerPiece;
+import utils.GUIStyles;
+import utils.Moves;
 import utils.SoundPlayer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -23,23 +24,28 @@ import java.util.Random;
 public class CheckerBoardPanel extends JPanel {
 
     private Space[][] spaces;
-    private int numBlackPieces;
-    private int numRedPieces;
-    private JLabel blackPlayerStatus;
-    private JLabel redPlayerStatus;
-    private JFrame endGameFrame = new JFrame();
+    private int numPlayer1Pieces;
+    private int numPlayer2Pieces;
+    private JLabel player1Status;
+    private JLabel player2Status;
+    private JFrame endGameFrame;
     JLabel statusLabel;
-    public String currentPlayer;
+    public int currentPlayer;
     public boolean gameOver;
-    public JMenuBar menuBar = new JMenuBar();
+    public JMenuBar menuBar;
 
-    public static boolean sounds = true;
-    public static boolean forceJumps = true;
+    public Space[][] getSpaces() {
+        return spaces;
+    }
 
     public void createNewBoard() {
         gameOver = false;
-        numBlackPieces = 12;
-        numRedPieces = 12;
+        numPlayer1Pieces = 12;
+        numPlayer2Pieces = 12;
+        Moves.forceJumpEnabled = true;
+        SoundPlayer.soundsEnabled = true;
+        GUIStyles.setBlackLightModeEnabled(false);
+
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeStatus();
@@ -62,9 +68,9 @@ public class CheckerBoardPanel extends JPanel {
                 for (int j = start; j < 8; j += 2) {
                     spaces[i][j] = new Space(i + 1, j + 1, true);
                     if(i < 3) {
-                        spaces[i][j].setPiece(new CheckerPiece("black"));
+                        spaces[i][j].setPiece(new CheckerPiece(1));
                     } else if(i > 4) {
-                        spaces[i][j].setPiece(new CheckerPiece("red"));
+                        spaces[i][j].setPiece(new CheckerPiece(2));
                     }
                     if(start == 0) {
                         spaces[i][j + 1] = new Space(i + 2, j + 1, false);
@@ -81,10 +87,10 @@ public class CheckerBoardPanel extends JPanel {
     	statusLabel = new JLabel("Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	add(statusLabel, createConstraints(0, 0, 8));
-    	blackPlayerStatus = new JLabel("Black Pieces: " + numBlackPieces);
-    	add(blackPlayerStatus, createConstraints(1, 0, 1));
-    	redPlayerStatus = new JLabel("Red Pieces: " + numRedPieces);
-    	add(redPlayerStatus, createConstraints(2, 0, 1));
+    	player1Status = new JLabel("Player 1 Pieces: " + numPlayer1Pieces);
+    	add(player1Status, createConstraints(1, 0, 1));
+    	player2Status = new JLabel("Player 2 Pieces: " + numPlayer2Pieces);
+    	add(player2Status, createConstraints(2, 0, 1));
     }
     
     private void initializeBoardGUI() {
@@ -100,48 +106,51 @@ public class CheckerBoardPanel extends JPanel {
     private void initializePlayer() {
         int random = new Random().nextInt(2);
         if(random == 0) {
-        	currentPlayer = "black";
-        	statusLabel.setText("Black moves first!");
+        	currentPlayer = 1;
+        	statusLabel.setText("Player 1 moves first!");
         } else {
-        	currentPlayer = "red";
-        	statusLabel.setText("Red moves first!");
+        	currentPlayer = 2;
+        	statusLabel.setText("Player 2 moves first!");
         }
     }
     
     private void initializeMenu() {
     	menuBar = new JMenuBar();
     	JMenu settings = new JMenu("Settings");
-    	menuBar.add(settings);
+
     	JCheckBox toggleSounds = new JCheckBox("Sounds?");
     	JCheckBox toggleJumps = new JCheckBox("Forced Jumps?");
+    	JCheckBox toggleBlackLightMode = new JCheckBox("Black light Mode?");
+
     	toggleSounds.setSelected(true);
     	toggleJumps.setSelected(true);
-    	settings.add(toggleJumps);
+    	toggleBlackLightMode.setSelected(false);
+
     	toggleJumps.addActionListener(e -> {
-    		JCheckBox toggle = (JCheckBox)e.getSource();
-    		if(toggle.isSelected()) {
-    			forceJumps = true;
-    		} else {
-    			forceJumps = false;
-    		}
+    		JCheckBox toggle = (JCheckBox) e.getSource();
+            Moves.forceJumpEnabled = toggle.isSelected();
     	});
-    	
-    	settings.add(toggleSounds);
     	toggleSounds.addActionListener(e -> {
-    		JToggleButton toggle = (JToggleButton)e.getSource();
-    		if(toggle.isSelected()) {
-    			sounds = true;
-    		} else {
-    			sounds = false;
-    		}
+    		JToggleButton toggle = (JToggleButton) e.getSource();
+            SoundPlayer.soundsEnabled = toggle.isSelected();
     	});
+    	toggleBlackLightMode.addActionListener(e -> {
+    	    JToggleButton toggle = (JToggleButton) e.getSource();
+    	    GUIStyles.setBlackLightModeEnabled(toggle.isSelected());
+        });
+
+        settings.add(toggleJumps);
+        settings.add(toggleSounds);
+        settings.add(toggleBlackLightMode);
+        menuBar.add(settings);
     }
     
-    private void initializeEndGame() {
+    private void displayEndGameOptions() {
         SoundPlayer.victorySoundEffect();
         JButton playAgain = new JButton("Play Again");
         JButton exit = new JButton("Exit");
-  
+
+        endGameFrame = new JFrame();
         endGameFrame.setSize(250, 75);
         endGameFrame.setVisible(true);
         endGameFrame.setLayout(new BorderLayout());
@@ -170,67 +179,8 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     private void updatePlayerStatus() {
-        blackPlayerStatus.setText("Black Pieces: " + numBlackPieces);
-        redPlayerStatus.setText("Red Pieces: " + numRedPieces);
-    }
-
-    public Space[] getValidMoves(Space space) {
-        if(space.getPiece() == null) {
-            throw new IllegalArgumentException("There is no piece to move on that space");
-        }
-        Space[] openSpaces = new Space[4];
-        int i = 0;
-        CheckerPiece piece = space.getPiece();
-        String color = piece.getColor();
-        boolean isKing = piece.isKing();
-
-        if("red".equals(color) || isKing) {
-            Space aboveLeft = isValidMove(space, -1, -1);
-            if(aboveLeft != null) {
-                openSpaces[i] = aboveLeft;
-                i++;
-            }
-            Space aboveRight = isValidMove(space, -1, 1);
-            if(aboveRight != null) {
-                openSpaces[i] = aboveRight;
-                i++;
-            }
-        }
-        if("black".equals(color) || isKing) {
-            Space belowLeft = isValidMove(space, 1, -1);
-            if(belowLeft != null) {
-                openSpaces[i] = belowLeft;
-                i++;
-            }
-            Space belowRight = isValidMove(space, 1, 1);
-            if(belowRight != null) {
-                openSpaces[i] = belowRight;
-                i++;
-            }
-        }
-        return Arrays.copyOf(openSpaces, i);
-    }
-
-    private Space isValidMove(Space space, int changeY, int changeX) {
-        int yCoordinate = space.getYCoordinate() - 1;
-        int xCoordinate = space.getXCoordinate() - 1;
-        CheckerPiece piece = space.getPiece();
-        String color = piece.getColor();
-
-        if(yCoordinate + changeY >= 0 && yCoordinate + changeY < 8 &&
-                xCoordinate + changeX >= 0 && xCoordinate + changeX < 8) {
-            Space newSpace = spaces[yCoordinate + changeY][xCoordinate + changeX];
-            CheckerPiece newPiece;
-            if((newPiece = newSpace.getPiece()) == null) {
-                return newSpace;
-            } else if(!color.equals(newPiece.getColor()) && Math.abs(changeY) < 2 && Math.abs(changeX) < 2) {
-                return isValidMove(space, changeY * 2, changeX * 2);
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+        player1Status.setText("Player 1 Pieces: " + numPlayer1Pieces);
+        player2Status.setText("Player 2 Pieces: " + numPlayer2Pieces);
     }
 
     public Space movePiece(int fromY, int fromX, int toY, int toX) {
@@ -247,46 +197,40 @@ public class CheckerBoardPanel extends JPanel {
         return newSpace;
     }
 
-    public static boolean isMoveAJump(int fromY, int fromX, int toY, int toX) {
-        return Math.abs(toY - fromY) == 2 && Math.abs(toX - fromX) == 2;
-    }
-
     public void removePiece(int fromY, int fromX) {
         CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
-        if("black".equals(removedPiece.getColor())) {
-            numBlackPieces--;
+        if(currentPlayer == removedPiece.getPlayer()) {
+            numPlayer1Pieces--;
         } else {
-            numRedPieces--;
+            numPlayer2Pieces--;
         }
         updatePlayerStatus();
     }
     
     public void changePlayer() {
-        SpaceClickListener.resetSelected();
-        SpaceClickListener.doubleJump = false;
         if(!gameOver) {
-            if("black".equals(currentPlayer)) {
-                currentPlayer = "red";
-                statusLabel.setText("Red's turn!");
+            if(currentPlayer == 1) {
+                currentPlayer = 2;
+                statusLabel.setText("Player 2's turn!");
             } else {
-                currentPlayer = "black";
-                statusLabel.setText("Black's turn!");
+                currentPlayer = 1;
+                statusLabel.setText("Player 1's turn!");
             }
         }
     }
 
     public void checkGameOver() {
-        if(numBlackPieces == 0) {
-            statusLabel.setText("Red Wins!");
-            endGameFrame.setTitle("Red Wins!");
+        if(numPlayer1Pieces == 0) {
+            statusLabel.setText("Player 2 Wins!");
+            endGameFrame.setTitle("Player 2 Wins!");
             gameOver = true;
-            initializeEndGame();
+            displayEndGameOptions();
         }
-        if(numRedPieces == 0) {
-            statusLabel.setText("Black Wins!");
-            endGameFrame.setTitle("Black Wins!");
+        if(numPlayer2Pieces == 0) {
+            statusLabel.setText("Player 1 Wins!");
+            endGameFrame.setTitle("Player 1 Wins!");
             gameOver = true;
-            initializeEndGame();
+            displayEndGameOptions();
         }
     }
 }

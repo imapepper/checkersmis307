@@ -2,7 +2,7 @@ package objects;
 
 /**
  * Class that represents a CheckerPiece object.
- * Each CheckerPiece has a String color and a boolean king status
+ * Each CheckerPiece has a String player and a boolean king status
  *
  * @author Chase Erickson
  * @author Joseph Hage
@@ -10,27 +10,27 @@ package objects;
  * 2017-03-06
  */
 public class CheckerPiece {
-    private String color;
+    private int player;
     private boolean isKing;
 
     /**
      * CheckerPiece constructor; isKing is always false initially
      *
-     * @param color String parameter to set the initial color of a piece
-     *              Color can be "black" or "red" and cannot be changed after set by constructor
+     * @param player String parameter to set the initial player of a piece
+     *              Player can be 1 or 2 and cannot be changed after set by constructor
      */
-    public CheckerPiece(String color) {
-        this.color = color;
+    public CheckerPiece(int player) {
+        this.player = player;
         isKing = false;
     }
 
     /**
-     * Get method to retrieve CheckerPiece color
+     * Get method to retrieve CheckerPiece player
      *
-     * @return String color
+     * @return String player
      */
-    public String getColor() {
-        return color;
+    public int getPlayer() {
+        return player;
     }
 
     /**
