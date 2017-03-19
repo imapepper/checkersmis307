@@ -1,10 +1,13 @@
 package utils;
 
 import components.Space;
+import eventListeners.SpaceClickListener;
 import main.Main;
+import objects.CheckerPiece;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Utility class to manage image file locations and background colors
@@ -19,20 +22,26 @@ public abstract class GUIStyles {
     private static boolean blackLightModeEnabled;
 
     public static void setBlackLightModeEnabled(boolean blackLightModeEnabled) {
-        Main.checkerBoard.setVisible(false);
         GUIStyles.blackLightModeEnabled = blackLightModeEnabled;
         Space[][] spaces;
         if ((spaces = Main.checkerBoard.getSpaces()) != null) {
             for (Space[] rowSpaces : spaces) {
                 for (Space space : rowSpaces) {
-                    space.setBackground(chooseSpaceBackgroundColor(space.isPlayable()));
-                    if (space.getPiece() != null) {
-                        space.changeIcon(false);
+                    if(SpaceClickListener.highlightedSpaces != null &&
+                            Arrays.asList(SpaceClickListener.highlightedSpaces).contains(space)) {
+                        space.setBackground(chooseSpaceHighlightColor());
+                    } else {
+                        space.setBackground(chooseSpaceBackgroundColor(space.isPlayable()));
+                    }
+                    CheckerPiece piece;
+                    if ((piece = space.getPiece()) != null) {
+                        space.setIcon(choosePieceIcon(piece.getPlayer(), piece.isKing(),
+                                space.equals(SpaceClickListener.selected)));
                     }
                 }
             }
         }
-        Main.checkerBoard.setVisible(true);
+        Main.frame.repaint();
     }
 
     public static Color chooseSpaceBackgroundColor(boolean isPlayable) {

@@ -44,7 +44,6 @@ public class CheckerBoardPanel extends JPanel {
         numPlayer2Pieces = 12;
         Moves.forceJumpEnabled = true;
         SoundPlayer.soundsEnabled = true;
-        GUIStyles.setBlackLightModeEnabled(false);
 
         initializeSpaces();
         setLayout(new GridBagLayout());
@@ -210,13 +209,8 @@ public class CheckerBoardPanel extends JPanel {
     
     public void changePlayer() {
         if(!gameOver) {
-            if(currentPlayer == 1) {
-                currentPlayer = 2;
-                statusLabel.setText("Player 2\'s turn!");
-            } else {
-                currentPlayer = 1;
-                statusLabel.setText("Player 1\'s turn!");
-            }
+            currentPlayer = currentPlayer == 1 ? 2 : 1;
+            statusLabel.setText("Player " + currentPlayer + "\'s turn!");
         }
         Moves.findAllMovesForPlayer(currentPlayer);
     }

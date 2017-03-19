@@ -21,9 +21,9 @@ import java.util.Arrays;
  */
 public class SpaceClickListener implements MouseListener {
 
-    private static Space selected;
+    public static Space selected;
     private static boolean multipleJumps;
-    private static Space[] highlightedSpaces;
+    public static Space[] highlightedSpaces;
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -41,24 +41,24 @@ public class SpaceClickListener implements MouseListener {
                 }
             } else if (space.getPiece() == null && selected != null && selected.getPiece() != null) {
                 Space[] validMoves = selected.getPiece().getValidMoves();
-                for (Space validMove : validMoves) {
-                    if (space.equals(validMove)) {
-                        int fromY = selected.getYCoordinate();
-                        int fromX = selected.getXCoordinate();
-                        int toY = validMove.getYCoordinate();
-                        int toX = validMove.getXCoordinate();
-                        if (Moves.isMoveAJump(fromY, fromX, toY, toX)) {
-                            jumpPiece(fromY, fromX, toY, toX);
-                            return;
-                        } else {
-                            Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
-                            changePlayer();
-                            return;
-                        }
+                if(Arrays.asList(validMoves).contains(space)) {
+                    int fromY = selected.getYCoordinate();
+                    int fromX = selected.getXCoordinate();
+                    int toY = space.getYCoordinate();
+                    int toX = space.getXCoordinate();
+                    if (Moves.isMoveAJump(fromY, fromX, toY, toX)) {
+                        jumpPiece(fromY, fromX, toY, toX);
+                        return;
+                    } else {
+                        Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
+                        changePlayer();
+                        return;
                     }
                 }
-                resetSelected();
-            } else {
+                if(!multipleJumps) {
+                    resetSelected();
+                }
+            } else if (!multipleJumps) {
                 resetSelected();
             }
         }

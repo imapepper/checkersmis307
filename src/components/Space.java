@@ -24,7 +24,7 @@ public class Space extends JLabel {
     private boolean isPlayable;
     private CheckerPiece piece;
 
-    Space(int yCoordinate, int xCoordinate, boolean isPlayable) {
+    public Space(int yCoordinate, int xCoordinate, boolean isPlayable) {
         this.yCoordinate = yCoordinate;
         this.xCoordinate = xCoordinate;
         this.isPlayable = isPlayable;
