@@ -161,12 +161,11 @@ public class CheckerBoardPanel extends JPanel {
 
         playAgain.addActionListener(e -> {
             CheckerBoardPanel checkerBoard = new CheckerBoardPanel();
+            Main.checkerBoard = checkerBoard;
             checkerBoard.createNewBoard();
-            Main.frame.remove(this);
             Main.frame.setContentPane(checkerBoard);
             Main.frame.invalidate();
             Main.frame.validate();
-            Main.checkerBoard = checkerBoard;
             endGameFrame.dispose();
         });
         exit.addActionListener(e -> System.exit(0));
