@@ -31,7 +31,6 @@ public class CheckerBoardPanel extends JPanel {
     private JLabel player2Status;
     private JFrame endGameFrame;
     private GameTimer timer;
-    private GameTimer turnTimer;
     private JLabel timerLabel;
     private JLabel turnTimeLabel;
 
@@ -58,14 +57,20 @@ public class CheckerBoardPanel extends JPanel {
         decideWhoMovesFirst();
         initializeMenu();
         Moves.findAllMovesForPlayer(currentPlayer);
-
-        timer = new GameTimer(timerLabel, "Time Elapsed", true);
-        turnTimer = new GameTimer(turnTimeLabel, "Turn Time Remaining", false);
     }
 
     public void startTimers() {
-        timer.startTimer();
-        turnTimer.startTimer();
+        if(timer == null) {
+            timer = new GameTimer(timerLabel, turnTimeLabel);
+            timer.startTimer();
+            timer.startTurn();
+        }
+    }
+
+    public void stopTimers() {
+        if(timer != null) {
+            timer.stopTimer();
+        }
     }
 
     private void initializeSpaces() {
@@ -233,10 +238,8 @@ public class CheckerBoardPanel extends JPanel {
             } else {
                 statusLabel.setText("Turn time expired. Player " + currentPlayer + "\'s turn!");
             }
-            turnTimer.endTimer();
             Moves.findAllMovesForPlayer(currentPlayer);
-            turnTimer = new GameTimer(turnTimeLabel, "Turn Time Remaining", false);
-            turnTimer.startTimer();
+            timer.startTurn();
         }
     }
 
@@ -247,7 +250,7 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.setTitle("Player 2 Wins!");
             gameOver = true;
             displayEndGameOptions();
-            timer.endTimer();
+            timer.stopTimer();
         }
         if(numPlayer2Pieces == 0) {
             statusLabel.setText("Player 1 Wins!");
@@ -255,7 +258,7 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.setTitle("Player 1 Wins!");
             gameOver = true;
             displayEndGameOptions();
-            timer.endTimer();
+            timer.stopTimer();
         }
     }
 }

@@ -4,6 +4,7 @@ import components.CheckerBoardPanel;
 import eventListeners.FrameListener;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Runnable class for program and GUI
@@ -31,6 +32,7 @@ public class Main {
 
         frame.add(checkerBoard);
         frame.setSize(800, 800);
+        frame.setMinimumSize(new Dimension(800, 800));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     	frame.setJMenuBar(checkerBoard.menuBar);

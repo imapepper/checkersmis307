@@ -16,45 +16,59 @@ import java.text.SimpleDateFormat;
  * 2017-03-20
  */
 public class GameTimer {
-
 	private long startTime;
-	private boolean countUp;
+	private long stopTime;
+
+    private String formattedTime;
+    private Integer currentTime;
+    private Integer turnStartTime;
+    private JLabel timerLabel;
+    private JLabel turnTimerLabel;
 	private Timer timer;
 
-	public GameTimer(JLabel label, String timerLabel, boolean countUp) {
-	    this.countUp = countUp;
+	public GameTimer(JLabel timerLabel, JLabel turnTimerLabel) {
+	    this.timerLabel = timerLabel;
+	    this.turnTimerLabel = turnTimerLabel;
         ActionListener timerListener;
-		if(countUp) {
-            timerListener = e -> {
-                SimpleDateFormat df = new SimpleDateFormat("mm:ss");
-                label.setText(timerLabel + ": " + df.format(System.currentTimeMillis() - startTime));
-            };
-        } else {
-            timerListener = e -> {
-                SimpleDateFormat df = new SimpleDateFormat("ss");
-                long timeRemaining = 30000 - (System.currentTimeMillis() - startTime);
-                if(timeRemaining <= 0) {
+        timerListener = e -> {
+            SimpleDateFormat df = new SimpleDateFormat("mm:ss");
+            formattedTime = df.format(System.currentTimeMillis() - startTime);
+            currentTime = Integer.parseInt(formattedTime.substring(0, 2)) * 60 + Integer.parseInt(formattedTime.substring(3));
+            if(turnStartTime != null) {
+                int turnTime = 30 - (currentTime - turnStartTime);
+                if(turnTime <= 0) {
                     Main.checkerBoard.changePlayer(true);
-                } else {
-                    label.setText(timerLabel + ": " + df.format(timeRemaining));
                 }
-            };
-        }
+                turnTimerLabel.setText("Turn Time Remaining: " + turnTime);
+            }
+            timerLabel.setText("Time Elapsed: " + formattedTime);
+        };
  		timer = new Timer(1000, timerListener);
 	}
 
-	public void startTimer() {
-        startTime = System.currentTimeMillis();
-	    if(!countUp) {
-            if(startTime % 1000 != 0) {
-                startTime += 1000;
-            }
-	        startTime = (startTime / 1000 * 1000) + (startTime % 1000);
+	public void startTurn() {
+	    if(currentTime == null) {
+            String formattedTime = new SimpleDateFormat("mm:ss").format(0);
+            turnStartTime = Integer.parseInt(formattedTime.substring(0, 2)) * 60 + Integer.parseInt(formattedTime.substring(3));
+        } else {
+            turnStartTime = currentTime;
         }
+        turnTimerLabel.setText("Turn Time Remaining: 30");
+    }
+
+    public void startTimer() {
+        startTime = System.currentTimeMillis();
 		timer.start();
+		timerLabel.setText("Time Elapsed: 00:00");
 	}
 
-	public void endTimer() {
+	public void resumeTimer() {
+	    startTime = System.currentTimeMillis() - (stopTime - startTime);
+	    timer.start();
+    }
+
+	public void stopTimer() {
 		timer.stop();
+		stopTime = System.currentTimeMillis();
 	}
 }
