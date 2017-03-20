@@ -7,6 +7,7 @@ import objects.CheckerPiece;
 import utils.GUIStyles;
 import utils.Moves;
 import utils.SoundPlayer;
+import utils.TurnTime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,7 +45,8 @@ public class CheckerBoardPanel extends JPanel {
         numPlayer2Pieces = 12;
         Moves.forceJumpEnabled = true;
         SoundPlayer.soundsEnabled = true;
-
+      
+        TurnTime.startTimer();
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeStatus();
@@ -221,6 +223,8 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.setTitle("Player 2 Wins!");
             gameOver = true;
             displayEndGameOptions();
+            TurnTime.endTimer();
+            TurnTime.displayTime();
         }
         if(numPlayer2Pieces == 0) {
             statusLabel.setText("Player 1 Wins!");
@@ -228,6 +232,8 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.setTitle("Player 1 Wins!");
             gameOver = true;
             displayEndGameOptions();
+            TurnTime.endTimer();
+            TurnTime.displayTime();
         }
     }
 }
