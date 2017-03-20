@@ -1,6 +1,7 @@
 package main;
 
 import components.CheckerBoardPanel;
+import eventListeners.FrameListener;
 
 import javax.swing.*;
 
@@ -24,6 +25,7 @@ public class Main {
      */
     public static void main(String[] args) {
         frame = new JFrame();
+        frame.addWindowListener(new FrameListener());
         checkerBoard = new CheckerBoardPanel();
         checkerBoard.createNewBoard();
 

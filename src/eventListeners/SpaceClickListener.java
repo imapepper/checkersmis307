@@ -112,13 +112,12 @@ public class SpaceClickListener implements MouseListener {
                 changePlayer();
             }
         }
-        Main.checkerBoard.checkGameOver();
     }
 
     private static void changePlayer() {
         resetSelected();
         multipleJumps = false;
-        Main.checkerBoard.changePlayer();
+        Main.checkerBoard.changePlayer(false);
     }
 
     /**

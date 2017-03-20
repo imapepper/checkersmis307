@@ -7,7 +7,7 @@ import objects.CheckerPiece;
 import utils.GUIStyles;
 import utils.Moves;
 import utils.SoundPlayer;
-import utils.TurnTime;
+import utils.GameTimer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +30,11 @@ public class CheckerBoardPanel extends JPanel {
     private JLabel player1Status;
     private JLabel player2Status;
     private JFrame endGameFrame;
+    private GameTimer timer;
+    private GameTimer turnTimer;
+    private JLabel timerLabel;
+    private JLabel turnTimeLabel;
+
     JLabel statusLabel;
     public int currentPlayer;
     public boolean gameOver;
@@ -45,8 +50,7 @@ public class CheckerBoardPanel extends JPanel {
         numPlayer2Pieces = 12;
         Moves.forceJumpEnabled = true;
         SoundPlayer.soundsEnabled = true;
-      
-        TurnTime.startTimer();
+
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeStatus();
@@ -54,6 +58,14 @@ public class CheckerBoardPanel extends JPanel {
         decideWhoMovesFirst();
         initializeMenu();
         Moves.findAllMovesForPlayer(currentPlayer);
+
+        timer = new GameTimer(timerLabel, "Time Elapsed", true);
+        turnTimer = new GameTimer(turnTimeLabel, "Turn Time Remaining", false);
+    }
+
+    public void startTimers() {
+        timer.startTimer();
+        turnTimer.startTimer();
     }
 
     private void initializeSpaces() {
@@ -89,10 +101,14 @@ public class CheckerBoardPanel extends JPanel {
     	statusLabel = new JLabel("Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	add(statusLabel, createConstraints(0, 0, 8));
+        timerLabel = new JLabel();
+        add(timerLabel, createConstraints(1, 0, 1));
     	player1Status = new JLabel("Player 1 Pieces: " + numPlayer1Pieces);
-    	add(player1Status, createConstraints(1, 0, 1));
+    	add(player1Status, createConstraints(3, 0, 1));
     	player2Status = new JLabel("Player 2 Pieces: " + numPlayer2Pieces);
-    	add(player2Status, createConstraints(2, 0, 1));
+    	add(player2Status, createConstraints(4, 0, 1));
+    	turnTimeLabel = new JLabel();
+    	add(turnTimeLabel, createConstraints(2, 0, 1));
     }
     
     private void initializeBoardGUI() {
@@ -208,23 +224,30 @@ public class CheckerBoardPanel extends JPanel {
         updatePlayerStatus();
     }
     
-    public void changePlayer() {
+    public void changePlayer(boolean turnTimeExpired) {
+        checkGameOver();
         if(!gameOver) {
             currentPlayer = currentPlayer == 1 ? 2 : 1;
-            statusLabel.setText("Player " + currentPlayer + "\'s turn!");
+            if(!turnTimeExpired) {
+                statusLabel.setText("Player " + currentPlayer + "\'s turn!");
+            } else {
+                statusLabel.setText("Turn time expired. Player " + currentPlayer + "\'s turn!");
+            }
+            turnTimer.endTimer();
+            Moves.findAllMovesForPlayer(currentPlayer);
+            turnTimer = new GameTimer(turnTimeLabel, "Turn Time Remaining", false);
+            turnTimer.startTimer();
         }
-        Moves.findAllMovesForPlayer(currentPlayer);
     }
 
-    public void checkGameOver() {
+    private void checkGameOver() {
         if(numPlayer1Pieces == 0) {
             statusLabel.setText("Player 2 Wins!");
             endGameFrame = new JFrame();
             endGameFrame.setTitle("Player 2 Wins!");
             gameOver = true;
             displayEndGameOptions();
-            TurnTime.endTimer();
-            TurnTime.displayTime();
+            timer.endTimer();
         }
         if(numPlayer2Pieces == 0) {
             statusLabel.setText("Player 1 Wins!");
@@ -232,8 +255,7 @@ public class CheckerBoardPanel extends JPanel {
             endGameFrame.setTitle("Player 1 Wins!");
             gameOver = true;
             displayEndGameOptions();
-            TurnTime.endTimer();
-            TurnTime.displayTime();
+            timer.endTimer();
         }
     }
 }
