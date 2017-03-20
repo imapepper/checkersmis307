@@ -1,7 +1,7 @@
 package utils;
 
 
-import main.Main;
+import eventListeners.SpaceClickListener;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -37,7 +37,7 @@ public class GameTimer {
             if(turnStartTime != null) {
                 int turnTime = 30 - (currentTime - turnStartTime);
                 if(turnTime <= 0) {
-                    Main.checkerBoard.changePlayer(true);
+                    SpaceClickListener.changePlayer(true);
                 }
                 turnTimerLabel.setText("Turn Time Remaining: " + turnTime);
             }

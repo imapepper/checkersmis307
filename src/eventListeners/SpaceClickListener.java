@@ -51,7 +51,7 @@ public class SpaceClickListener implements MouseListener {
                         return;
                     } else {
                         Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
-                        changePlayer();
+                        changePlayer(false);
                         return;
                     }
                 }
@@ -90,7 +90,7 @@ public class SpaceClickListener implements MouseListener {
         selected = Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
         CheckerPiece piece = selected.getPiece();
         if (!isKing && piece.isKing()) {
-            changePlayer();
+            changePlayer(false);
         } else {
             selected.changeIcon(true);
             Space[] newValidMoves = new Space[4];
@@ -109,15 +109,15 @@ public class SpaceClickListener implements MouseListener {
                 highlightValidMoveSpaces(selected, true);
                 multipleJumps = true;
             } else {
-                changePlayer();
+                changePlayer(false);
             }
         }
     }
 
-    private static void changePlayer() {
+    public static void changePlayer(boolean timeExpired) {
         resetSelected();
         multipleJumps = false;
-        Main.checkerBoard.changePlayer(false);
+        Main.checkerBoard.changePlayer(timeExpired);
     }
 
     /**
