@@ -39,7 +39,7 @@ public class GameTimer {
                 if(turnTime <= 0) {
                     SpaceClickListener.changePlayer(true);
                 }
-                turnTimerLabel.setText("Turn Time Remaining: " + turnTime);
+                turnTimerLabel.setText("Turn Time: " + turnTime);
             }
             timerLabel.setText("Time Elapsed: " + formattedTime);
         };
@@ -53,7 +53,7 @@ public class GameTimer {
         } else {
             turnStartTime = currentTime;
         }
-        turnTimerLabel.setText("Turn Time Remaining: 30");
+        turnTimerLabel.setText("Turn Time: 30");
     }
 
     public void startTimer() {
