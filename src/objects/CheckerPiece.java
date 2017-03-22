@@ -1,6 +1,9 @@
 package objects;
 
 import components.Space;
+import utils.Moves;
+
+import java.util.Arrays;
 
 /**
  * Class that represents a CheckerPiece object.
@@ -15,6 +18,7 @@ public class CheckerPiece {
     private int player;
     private boolean isKing;
     private Space[] validMoves;
+    private Space[] jumpMoves;
 
     /**
      * CheckerPiece constructor; isKing is always false initially
@@ -54,10 +58,27 @@ public class CheckerPiece {
     }
 
     public Space[] getValidMoves() {
-        return validMoves;
+        if(Moves.forceJumpEnabled && jumpMoves != null) {
+            return jumpMoves;
+        } else {
+            return validMoves;
+        }
     }
 
     public void setValidMoves(Space[] validMoves) {
         this.validMoves = validMoves;
+    }
+
+    public void resetJumpMoves() {
+        jumpMoves = null;
+    }
+
+    public void addJumpMove(Space jumpMove) {
+        if(jumpMoves == null) {
+            jumpMoves = new Space[1];
+        } else {
+            jumpMoves = Arrays.copyOf(jumpMoves, jumpMoves.length + 1);
+        }
+        jumpMoves[jumpMoves.length - 1] = jumpMove;
     }
 }

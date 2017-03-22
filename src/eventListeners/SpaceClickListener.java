@@ -25,6 +25,11 @@ public class SpaceClickListener implements MouseListener {
     private static boolean multipleJumps;
     public static Space[] highlightedSpaces;
 
+    /**
+     *
+     * @param e MouseEvent object. Required by MouseListener interface. Used to get the component that the listener was
+     *          attached to.
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!Main.checkerBoard.gameOver) {
@@ -33,15 +38,19 @@ public class SpaceClickListener implements MouseListener {
             if ((piece = space.getPiece()) != null && piece.getPlayer() == Main.checkerBoard.currentPlayer && !multipleJumps) {
                 if (!space.equals(selected)) {
                     resetSelected();
-                    if(piece.getValidMoves() != null && piece.getValidMoves().length > 0) {
-                        space.changeIcon(true);
-                        highlightValidMoveSpaces(space, true);
-                        selected = space;
+                    if (piece.getValidMoves() != null && piece.getValidMoves().length > 0) {
+                        if (Moves.forceJumpEnabled && Moves.jumpMoves.length > 0 && !Arrays.asList(Moves.jumpMoves).contains(space)) {
+                            Main.checkerBoard.statusLabel.setText("Force jumps are enabled and there is a jump available. You must jump.");
+                        } else {
+                            space.changeIcon(true);
+                            highlightValidMoveSpaces(space, true);
+                            selected = space;
+                        }
                     }
                 }
             } else if (space.getPiece() == null && selected != null && selected.getPiece() != null) {
                 Space[] validMoves = selected.getPiece().getValidMoves();
-                if(Arrays.asList(validMoves).contains(space)) {
+                if (Arrays.asList(validMoves).contains(space)) {
                     int fromY = selected.getYCoordinate();
                     int fromX = selected.getXCoordinate();
                     int toY = space.getYCoordinate();
@@ -55,7 +64,7 @@ public class SpaceClickListener implements MouseListener {
                         return;
                     }
                 }
-                if(!multipleJumps) {
+                if (!multipleJumps) {
                     resetSelected();
                 }
             } else if (!multipleJumps) {
@@ -64,25 +73,40 @@ public class SpaceClickListener implements MouseListener {
         }
     }
 
-    private static void highlightValidMoveSpaces(Space space, boolean highlighted) {
-        Space[] validMoves = highlighted ? space.getPiece().getValidMoves() : highlightedSpaces;
+    /**
+     *
+     * @param space
+     * @param highlight
+     */
+    private static void highlightValidMoveSpaces(Space space, boolean highlight) {
+        Space[] validMoves = highlight ? space.getPiece().getValidMoves() : highlightedSpaces;
         for (Space validMove : validMoves) {
-            validMove.setBackground(highlighted ? GUIStyles.chooseSpaceHighlightColor() :
+            validMove.setBackground(highlight ? GUIStyles.chooseSpaceHighlightColor() :
                     GUIStyles.chooseSpaceBackgroundColor(true));
         }
-        highlightedSpaces = highlighted ? validMoves : null;
+        highlightedSpaces = highlight ? validMoves : null;
     }
 
-    private static void resetSelected() {
+    /**
+     *
+     */
+    public static void resetSelected() {
         if (selected != null && selected.getPiece() != null) {
             selected.changeIcon(false);
             selected = null;
         }
-        if(highlightedSpaces != null) {
+        if (highlightedSpaces != null) {
             highlightValidMoveSpaces(selected, false);
         }
     }
 
+    /**
+     *
+     * @param fromY
+     * @param fromX
+     * @param toY
+     * @param toX
+     */
     private static void jumpPiece(int fromY, int fromX, int toY, int toX) {
         Main.checkerBoard.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
         boolean isKing = selected.getPiece().isKing();

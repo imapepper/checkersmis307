@@ -34,7 +34,7 @@ public class CheckerBoardPanel extends JPanel {
     private JLabel timerLabel;
     private JLabel turnTimeLabel;
 
-    JLabel statusLabel;
+    public JLabel statusLabel;
     public int currentPlayer;
     public boolean gameOver;
     public JMenuBar menuBar;
@@ -60,18 +60,18 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     public void startTimers() {
-        if(timer == null) {
+        if (timer == null) {
             timer = new GameTimer(timerLabel, turnTimeLabel);
             timer.startTimer();
             timer.startTurn();
         }
     }
 
-    public void stopTimers() {
-        if(timer != null) {
-            timer.stopTimer();
-        }
-    }
+//    public void stopTimers() {
+//        if (timer != null) {
+//            timer.stopTimer();
+//        }
+//    }
 
     private void initializeSpaces() {
         spaces = new Space[8][8];
@@ -86,12 +86,12 @@ public class CheckerBoardPanel extends JPanel {
                 }
                 for (int j = start; j < 8; j += 2) {
                     spaces[i][j] = new Space(i + 1, j + 1, true);
-                    if(i < 3) {
+                    if (i < 3) {
                         spaces[i][j].setPiece(new CheckerPiece(1));
-                    } else if(i > 4) {
+                    } else if (i > 4) {
                         spaces[i][j].setPiece(new CheckerPiece(2));
                     }
-                    if(start == 0) {
+                    if (start == 0) {
                         spaces[i][j + 1] = new Space(i + 2, j + 1, false);
                     } else {
                         spaces[i][j - 1] = new Space(i, j + 1, false);
@@ -128,7 +128,7 @@ public class CheckerBoardPanel extends JPanel {
     
     private void decideWhoMovesFirst() {
         int random = new Random().nextInt(2);
-        if(random == 0) {
+        if (random == 0) {
         	currentPlayer = 1;
         	statusLabel.setText("Player 1 moves first!");
         } else {
@@ -152,6 +152,9 @@ public class CheckerBoardPanel extends JPanel {
     	toggleJumps.addActionListener(e -> {
     		JCheckBox toggle = (JCheckBox) e.getSource();
             Moves.forceJumpEnabled = toggle.isSelected();
+            Moves.findAllMovesForPlayer(currentPlayer);
+            SpaceClickListener.resetSelected();
+            statusLabel.setText("Player " + currentPlayer + "\'s Turn!");
     	});
     	toggleSounds.addActionListener(e -> {
     		JToggleButton toggle = (JToggleButton) e.getSource();
@@ -206,10 +209,10 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     public Space movePiece(int fromY, int fromX, int toY, int toX) {
-        if(spaces[fromY - 1][fromX - 1].getPiece() == null) {
+        if (spaces[fromY - 1][fromX - 1].getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
         }
-        if(spaces[toY - 1][toX - 1].getPiece() != null) {
+        if (spaces[toY - 1][toX - 1].getPiece() != null) {
             throw new IllegalArgumentException("Space already has a piece");
         }
         CheckerPiece piece = spaces[fromY - 1][fromX - 1].removePiece();
@@ -221,7 +224,7 @@ public class CheckerBoardPanel extends JPanel {
 
     public void removePiece(int fromY, int fromX) {
         CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
-        if(removedPiece.getPlayer() == 1) {
+        if (removedPiece.getPlayer() == 1) {
             numPlayer1Pieces--;
         } else {
             numPlayer2Pieces--;
@@ -231,9 +234,9 @@ public class CheckerBoardPanel extends JPanel {
     
     public void changePlayer(boolean turnTimeExpired) {
         checkGameOver();
-        if(!gameOver) {
+        if (!gameOver) {
             currentPlayer = currentPlayer == 1 ? 2 : 1;
-            if(!turnTimeExpired) {
+            if (!turnTimeExpired) {
                 statusLabel.setText("Player " + currentPlayer + "\'s turn!");
             } else {
                 statusLabel.setText("Turn time expired. Player " + currentPlayer + "\'s turn!");
@@ -244,7 +247,7 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     private void checkGameOver() {
-        if(numPlayer1Pieces == 0) {
+        if (numPlayer1Pieces == 0) {
             statusLabel.setText("Player 2 Wins!");
             endGameFrame = new JFrame();
             endGameFrame.setTitle("Player 2 Wins!");
@@ -252,7 +255,7 @@ public class CheckerBoardPanel extends JPanel {
             displayEndGameOptions();
             timer.stopTimer();
         }
-        if(numPlayer2Pieces == 0) {
+        if (numPlayer2Pieces == 0) {
             statusLabel.setText("Player 1 Wins!");
             endGameFrame = new JFrame();
             endGameFrame.setTitle("Player 1 Wins!");
