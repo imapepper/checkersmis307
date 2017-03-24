@@ -31,7 +31,6 @@ public abstract class Moves {
             for (Space space : rowSpaces) {
                 CheckerPiece piece;
                 if ((piece = space.getPiece()) != null && piece.getPlayer() == player) {
-                    if (forceJumpEnabled) piece.resetJumpMoves();
                     Space[] movesForPiece = getValidMoves(spaces, space);
                     int currentNumMoves = movesForPlayer.length;
                     movesForPlayer = Arrays.copyOf(movesForPlayer, currentNumMoves + movesForPiece.length);
@@ -47,6 +46,7 @@ public abstract class Moves {
         boolean isKing = piece.isKing();
         Space[] openSpaces = new Space[4];
         int i = 0;
+        if (forceJumpEnabled) piece.resetJumpMoves();
 
         if (player == 2 || isKing) {
             Space aboveLeft = isValidMove(spaces, space, -1, -1);
