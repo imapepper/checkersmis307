@@ -19,9 +19,9 @@ public abstract class Moves {
 
     public static boolean forceJumpEnabled;
     public static Space[] jumpMoves;
-    public static Space[] movesForPlayer;
 
-    public static void findAllMovesForPlayer(int player) {
+    public static Space[] findAllMovesForPlayer(int player) {
+        Space[] movesForPlayer;
         if (forceJumpEnabled) {
             jumpMoves = new Space[0];
         }
@@ -38,6 +38,7 @@ public abstract class Moves {
                 }
             }
         }
+        return movesForPlayer;
     }
 
     public static Space[] getValidMoves(Space[][] spaces, Space space) {

@@ -180,18 +180,20 @@ public class CheckerBoardPanel extends JPanel {
         menuBar.add(settings);
     }
     
-    private void displayEndGameOptions() {
+    private void displayEndGameOptions(String title) {
         SoundPlayer.victorySoundEffect();
         JButton playAgain = new JButton("Play Again");
         JButton exit = new JButton("Exit");
 
+        endGameFrame = new JFrame();
+        endGameFrame.setTitle(title);
         endGameFrame.setSize(250, 75);
         endGameFrame.setVisible(true);
         endGameFrame.setLayout(new BorderLayout());
         endGameFrame.add(playAgain, BorderLayout.NORTH);
         endGameFrame.add(exit, BorderLayout.SOUTH);
         endGameFrame.setLocation(400, 350);     
-        endGameFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        endGameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         endGameFrame.setResizable(false);
 
         playAgain.addActionListener(e -> {
@@ -250,26 +252,29 @@ public class CheckerBoardPanel extends JPanel {
             } else {
                 statusLabel.setText("Turn time expired. Player " + currentPlayer + "\'s turn!");
             }
-            Moves.findAllMovesForPlayer(currentPlayer);
+            Space[] movesForPlayer = Moves.findAllMovesForPlayer(currentPlayer);
+            if (movesForPlayer.length == 0) {
+                gameOver = true;
+                displayEndGameOptions("Player " + currentPlayer + " Forfeits.");
+                timer.stopTimer();
+            }
             timer.startTurn();
         }
     }
     
     private void checkGameOver() {
         if (numPlayer1Pieces == 0) {
-            statusLabel.setText("Player 2 Wins!");
-            endGameFrame = new JFrame();
-            endGameFrame.setTitle("Player 2 Wins!");
+            String title = "Player 2 Wins!";
+            statusLabel.setText(title);
             gameOver = true;
-            displayEndGameOptions();
+            displayEndGameOptions(title);
             timer.stopTimer();
         }
         if (numPlayer2Pieces == 0) {
-            statusLabel.setText("Player 1 Wins!");
-            endGameFrame = new JFrame();
-            endGameFrame.setTitle("Player 1 Wins!");
+            String title = "Player 1 Wins!";
+            statusLabel.setText(title);
             gameOver = true;
-            displayEndGameOptions();
+            displayEndGameOptions(title);
             timer.stopTimer();
         }
     }

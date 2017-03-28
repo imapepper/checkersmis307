@@ -31,7 +31,7 @@ public class Main {
         checkerBoard.createNewBoard();
 
         frame.add(checkerBoard);
-        frame.setSize(800, 800);
+        frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
         frame.setMinimumSize(new Dimension(800, 800));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
