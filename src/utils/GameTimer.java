@@ -4,6 +4,8 @@ package utils;
 import eventListeners.SpaceClickListener;
 
 import javax.swing.*;
+
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
@@ -24,11 +26,13 @@ public class GameTimer {
     private Integer turnStartTime;
     private JLabel timerLabel;
     private JLabel turnTimerLabel;
+    private Font boldFont = new Font("Serif", Font.BOLD, 14);
 	private Timer timer;
 
 	public GameTimer(JLabel timerLabel, JLabel turnTimerLabel) {
 	    this.timerLabel = timerLabel;
 	    this.turnTimerLabel = turnTimerLabel;
+        turnTimerLabel.setFont(boldFont);
         ActionListener timerListener;
         timerListener = e -> {
             SimpleDateFormat df = new SimpleDateFormat("mm:ss");
@@ -60,6 +64,7 @@ public class GameTimer {
         startTime = System.currentTimeMillis();
 		timer.start();
 		timerLabel.setText("Time Elapsed: 00:00");
+		
 	}
 
 	public void resumeTimer() {

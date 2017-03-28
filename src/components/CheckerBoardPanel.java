@@ -111,6 +111,7 @@ public class CheckerBoardPanel extends JPanel {
     	player1Status = new JLabel("Player 1 Pieces: " + numPlayer1Pieces);
     	add(player1Status, createConstraints(3, 0, 1));
     	player2Status = new JLabel("Player 2 Pieces: " + numPlayer2Pieces);
+    	player2Status.setForeground(Color.RED);
     	add(player2Status, createConstraints(4, 0, 1));
     	turnTimeLabel = new JLabel();
     	add(turnTimeLabel, createConstraints(2, 0, 1));
@@ -162,6 +163,14 @@ public class CheckerBoardPanel extends JPanel {
     	});
     	toggleBlackLightMode.addActionListener(e -> {
     	    JToggleButton toggle = (JToggleButton) e.getSource();
+    	    boolean blackLightMode = toggle.isSelected();
+    	    if(blackLightMode) {
+    	    	player1Status.setForeground(new Color(170, 0, 255));
+    	    	player2Status.setForeground(new Color(255, 0, 170));
+    	    } else {
+    	    	player1Status.setForeground(Color.BLACK);
+    	    	player2Status.setForeground(Color.RED);
+    	    }
     	    GUIStyles.setBlackLightModeEnabled(toggle.isSelected());
         });
 
@@ -207,7 +216,7 @@ public class CheckerBoardPanel extends JPanel {
         player1Status.setText("Player 1 Pieces: " + numPlayer1Pieces);
         player2Status.setText("Player 2 Pieces: " + numPlayer2Pieces);
     }
-
+    
     public Space movePiece(int fromY, int fromX, int toY, int toX) {
         if (spaces[fromY - 1][fromX - 1].getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
@@ -245,7 +254,7 @@ public class CheckerBoardPanel extends JPanel {
             timer.startTurn();
         }
     }
-
+    
     private void checkGameOver() {
         if (numPlayer1Pieces == 0) {
             statusLabel.setText("Player 2 Wins!");
