@@ -1,8 +1,8 @@
 package rmi;
 
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class CheckerGameServer implements CheckerGameRemote {
@@ -19,9 +19,8 @@ public class CheckerGameServer implements CheckerGameRemote {
             CheckerGameServer obj = new CheckerGameServer();
             CheckerGameRemote stub = (CheckerGameRemote) UnicastRemoteObject.exportObject(obj, 0);
 
-            System.setProperty("java.rmi.server.hostname", "2610:130:110:1520:c0b6:4bad:5a28:2bc");
-            Registry registry = LocateRegistry.createRegistry(1099);
-            registry.rebind("CheckerGameRemote", stub);
+            LocateRegistry.createRegistry(1099);
+            Naming.rebind("rmi://10.26.159.67:1099/CheckerGame", stub);
 
             System.err.println("CheckerGameServer ready");
         } catch (Exception e) {

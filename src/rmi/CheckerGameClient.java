@@ -1,7 +1,6 @@
 package rmi;
 
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.rmi.Naming;
 
 public class CheckerGameClient {
 
@@ -10,8 +9,7 @@ public class CheckerGameClient {
     public static void main(String[] args) {
 
         try {
-            Registry registry = LocateRegistry.getRegistry("2610:130:110:1520:c0b6:4bad:5a28:2bc", 1099);
-            CheckerGameRemote stub = (CheckerGameRemote) registry.lookup("CheckerGameRemote");
+            CheckerGameRemote stub = (CheckerGameRemote) Naming.lookup("rmi://10.26.159.67:1099/CheckerGame");
             String response = stub.sayHello();
             System.out.println("response: " + response);
         } catch (Exception e) {
