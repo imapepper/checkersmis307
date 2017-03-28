@@ -1,5 +1,7 @@
 package rmi;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -19,8 +21,17 @@ public class CheckerGameServer implements CheckerGameRemote {
             CheckerGameServer obj = new CheckerGameServer();
             CheckerGameRemote stub = (CheckerGameRemote) UnicastRemoteObject.exportObject(obj, 0);
 
+            String ipAddress = null;
+            try {
+                ipAddress = InetAddress.getLocalHost().toString();
+            } catch (UnknownHostException e) {
+                System.err.println(e.toString());
+            }
             LocateRegistry.createRegistry(1099);
-            Naming.rebind("rmi://10.26.159.67:1099/CheckerGame", stub);
+            assert ipAddress != null;
+            String name = "rmi://" + ipAddress.substring(ipAddress.indexOf("/") + 1) + "/CheckerGame";
+            System.err.println(name);
+            Naming.rebind(name, stub);
 
             System.err.println("CheckerGameServer ready");
         } catch (Exception e) {
