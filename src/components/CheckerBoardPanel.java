@@ -4,14 +4,17 @@ package components;
 import eventListeners.SpaceClickListener;
 import main.Main;
 import objects.CheckerPiece;
-import utils.GUIStyles;
+import utils.GameTimer;
 import utils.Moves;
 import utils.SoundPlayer;
-import utils.GameTimer;
 
+import javax.json.Json;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
+
+import static utils.GUIStyles.setBlackLightModeEnabled;
+import static utils.GameVariables.*;
 
 /**
  * Class extending JPanel to act as a GUI component.
@@ -43,17 +46,22 @@ public class CheckerBoardPanel extends JPanel {
         return spaces;
     }
 
-    public void createNewBoard() {
+    public void prepareGame(int startingPlayer) {
         gameOver = false;
         numPlayer1Pieces = 12;
         numPlayer2Pieces = 12;
-        SoundPlayer.soundsEnabled = true;
+        soundsEnabled = true;
 
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeStatus();
         initializeBoardGUI();
-        decideWhoMovesFirst();
+        if (startingPlayer == 0) {
+            decideWhoMovesFirst();
+        } else {
+            currentPlayer = startingPlayer;
+            statusLabel.setText("Player " + startingPlayer + " moves first!");
+        }
         Moves.findAllMovesForPlayer(currentPlayer);
     }
 
@@ -142,19 +150,19 @@ public class CheckerBoardPanel extends JPanel {
 
     	JCheckBox toggleSounds = new JCheckBox("Sounds?");
     	JCheckBox toggleBlackLightMode = new JCheckBox("Black light Mode?");
-    	JCheckBox forcedJumps = new JCheckBox("Forced Jumps?");
-        JCheckBox timedTurns = new JCheckBox("Timed Turns?");
+    	JCheckBox forcedJumpsBox = new JCheckBox("Forced Jumps?");
+        JCheckBox timedTurnsBox = new JCheckBox("Timed Turns?");
 
     	toggleSounds.setSelected(true);
     	toggleBlackLightMode.setSelected(false);
-    	forcedJumps.setSelected(Moves.forceJumpEnabled);
-    	timedTurns.setSelected(GameTimer.timedTurns);
+    	forcedJumpsBox.setSelected(forceJumpEnabled);
+    	timedTurnsBox.setSelected(timedTurns);
 
-    	forcedJumps.setEnabled(false);
-    	timedTurns.setEnabled(false);
+    	forcedJumpsBox.setEnabled(false);
+    	timedTurnsBox.setEnabled(false);
 
     	toggleSounds.addActionListener(e -> {
-            SoundPlayer.soundsEnabled = toggleSounds.isSelected();
+            soundsEnabled = toggleSounds.isSelected();
     	});
     	toggleBlackLightMode.addActionListener(e -> {
     	    boolean blackLightMode = toggleBlackLightMode.isSelected();
@@ -165,14 +173,14 @@ public class CheckerBoardPanel extends JPanel {
     	    	player1Status.setForeground(Color.BLACK);
     	    	player2Status.setForeground(Color.RED);
     	    }
-    	    GUIStyles.setBlackLightModeEnabled(blackLightMode);
+    	    setBlackLightModeEnabled(blackLightMode);
         });
 
         settings.add(toggleSounds);
         settings.add(toggleBlackLightMode);
         settings.add(new JSeparator());
-        settings.add(forcedJumps);
-        settings.add(timedTurns);
+        settings.add(forcedJumpsBox);
+        settings.add(timedTurnsBox);
         menuBar.add(settings);
         return menuBar;
     }
@@ -195,11 +203,11 @@ public class CheckerBoardPanel extends JPanel {
 
         playAgain.addActionListener(e -> {
             CheckerBoardPanel checkerBoard = new CheckerBoardPanel();
-            Main.checkerBoard = checkerBoard;
-            checkerBoard.createNewBoard();
-            Main.gameFrame.setContentPane(checkerBoard);
-            Main.gameFrame.invalidate();
-            Main.gameFrame.validate();
+            checkerBoard = checkerBoard;
+            checkerBoard.prepareGame(0);
+            gameFrame.setContentPane(checkerBoard);
+            gameFrame.invalidate();
+            gameFrame.validate();
             endGameFrame.dispose();
         });
         exit.addActionListener(e -> System.exit(0));
@@ -235,6 +243,15 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     public void changePlayer(boolean turnTimeExpired) {
+        if (socketProtocol.playerNum == currentPlayer) {
+            socketProtocol.sendMessage(
+                    Json.createObjectBuilder()
+                        .add("message", "changePlayer")
+                        .add("turnTimeExpired", turnTimeExpired)
+                        .build()
+                        .toString()
+            );
+        }
         checkGameOver();
         if (!gameOver) {
             currentPlayer = currentPlayer == 1 ? 2 : 1;

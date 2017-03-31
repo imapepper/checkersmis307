@@ -1,10 +1,12 @@
 package utils;
 
 import components.Space;
-import main.Main;
 import objects.CheckerPiece;
 
 import java.util.Arrays;
+
+import static utils.GameVariables.checkerBoard;
+import static utils.GameVariables.forceJumpEnabled;
 
 /**
  * Utility class to determine moves that a player is allowed to make
@@ -17,7 +19,6 @@ import java.util.Arrays;
  */
 public abstract class Moves {
 
-    public static boolean forceJumpEnabled;
     public static Space[] jumpMoves;
 
     public static Space[] findAllMovesForPlayer(int player) {
@@ -25,7 +26,7 @@ public abstract class Moves {
         if (forceJumpEnabled) {
             jumpMoves = new Space[0];
         }
-        Space[][] spaces = Main.checkerBoard.getSpaces();
+        Space[][] spaces = checkerBoard.getSpaces();
         movesForPlayer = new Space[0];
         for (Space[] rowSpaces : spaces) {
             for (Space space : rowSpaces) {

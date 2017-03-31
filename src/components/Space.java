@@ -1,12 +1,13 @@
 package components;
 
-import main.Main;
 import objects.CheckerPiece;
 import utils.GUIStyles;
 import utils.SoundPlayer;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static utils.GameVariables.checkerBoard;
 
 /**
  * Class extending JLabel to act as a GUI component.
@@ -70,12 +71,12 @@ public class Space extends JLabel {
         int player = piece.getPlayer();
         boolean isKing = piece.isKing();
         setIcon(GUIStyles.choosePieceIcon(player, selected, isKing));
-        if(Main.checkerBoard.statusLabel != null) {
+        if(checkerBoard.statusLabel != null) {
             if(selected) {
-                Main.checkerBoard.statusLabel.setText("Player " + player + " selected a" + (isKing ? " king " : " ")
+                checkerBoard.statusLabel.setText("Player " + player + " selected a" + (isKing ? " king " : " ")
                         + "piece for movement");
             } else {
-                Main.checkerBoard.statusLabel.setText("Player " + player + "\'s turn!");
+                checkerBoard.statusLabel.setText("Player " + player + "\'s turn!");
             }
         }
     }

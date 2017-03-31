@@ -1,19 +1,16 @@
 package sockets.multithreading;
 
-import utils.GameTimer;
-import utils.Moves;
-
 import javax.json.Json;
 import javax.json.JsonObject;
 import java.io.*;
 import java.net.Socket;
 
-import static main.Main.checkerBoard;
-import static main.Main.gameFrame;
+import static utils.GameVariables.*;
 
 public class SocketProtocol implements Runnable {
 
     public static boolean networkGame;
+    public int playerNum;
 
     private Socket socket;
     private boolean host;
@@ -30,14 +27,19 @@ public class SocketProtocol implements Runnable {
         new Thread(this).start();
 
         if (host) {
-            String preGameOptions = Json.createObjectBuilder()
-                                 .add("message", "preGameOptions")
-                                 .add("forcedJumps", Moves.forceJumpEnabled)
-                                 .add("timedTurns", GameTimer.timedTurns)
-                                 .build().toString();
-            sendMessage(preGameOptions);
+            checkerBoard.prepareGame(0);
+            playerNum = 1;
+            String preGameInfo = Json.createObjectBuilder()
+                                     .add("message", "preGameInfo")
+                                     .add("forcedJumps", forceJumpEnabled)
+                                     .add("timedTurns", timedTurns)
+                                     .add("startingPlayer", checkerBoard.currentPlayer)
+                                     .build().toString();
+            sendMessage(preGameInfo);
             String startGame = Json.createObjectBuilder().add("message", "startGame").build().toString();
             sendMessage(startGame);
+        } else {
+            playerNum = 2;
         }
     }
 
@@ -81,16 +83,19 @@ public class SocketProtocol implements Runnable {
     }
 
     public void processMessage(String json) {
+        System.out.println(json);
         JsonObject jsonObject = Json.createReader(new StringReader(json)).readObject();
         String message = jsonObject.getString("message");
 
-        if ("preGameOptions".equals(message)) {
-            Moves.forceJumpEnabled = jsonObject.getBoolean("forcedJumps");
-            GameTimer.timedTurns = jsonObject.getBoolean("timedTurns");
-            checkerBoard.createNewBoard();
+        if ("preGameInfo".equals(message)) {
+            forceJumpEnabled = jsonObject.getBoolean("forcedJumps");
+            timedTurns = jsonObject.getBoolean("timedTurns");
+            checkerBoard.prepareGame(jsonObject.getInt("startingPlayer"));
             gameFrame.setJMenuBar(checkerBoard.initializeMenu());
         } else if ("startGame".equals(message)) {
             checkerBoard.startTimers();
+        } else if ("changePlayer".equals(message)) {
+            checkerBoard.changePlayer(jsonObject.getBoolean("turnTimeExpired"));
         }
     }
 

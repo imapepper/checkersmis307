@@ -1,9 +1,10 @@
 package objects;
 
 import components.Space;
-import utils.Moves;
 
 import java.util.Arrays;
+
+import static utils.GameVariables.forceJumpEnabled;
 
 /**
  * Class that represents a CheckerPiece object.
@@ -58,7 +59,7 @@ public class CheckerPiece {
     }
 
     public Space[] getValidMoves() {
-        if(Moves.forceJumpEnabled && jumpMoves != null) {
+        if(forceJumpEnabled && jumpMoves != null) {
             return jumpMoves;
         } else {
             return validMoves;

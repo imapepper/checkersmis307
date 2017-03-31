@@ -2,12 +2,15 @@ package utils;
 
 import components.Space;
 import eventListeners.SpaceClickListener;
-import main.Main;
 import objects.CheckerPiece;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+
+import static utils.GameVariables.blackLightModeEnabled;
+import static utils.GameVariables.checkerBoard;
+import static utils.GameVariables.gameFrame;
 
 /**
  * Utility class to manage image file locations and background colors
@@ -19,16 +22,14 @@ import java.util.Arrays;
  */
 public abstract class GUIStyles {
 
-    private static boolean blackLightModeEnabled;
-
     /**
      *
-     * @param blackLightModeEnabled
+     * @param blackLightMode
      */
-    public static void setBlackLightModeEnabled(boolean blackLightModeEnabled) {
-        GUIStyles.blackLightModeEnabled = blackLightModeEnabled;
+    public static void setBlackLightModeEnabled(boolean blackLightMode) {
+        blackLightModeEnabled = blackLightMode;
         Space[][] spaces;
-        if ((spaces = Main.checkerBoard.getSpaces()) != null) {
+        if ((spaces = checkerBoard.getSpaces()) != null) {
             for (Space[] rowSpaces : spaces) {
                 for (Space space : rowSpaces) {
                     if(SpaceClickListener.highlightedSpaces != null &&
@@ -45,7 +46,7 @@ public abstract class GUIStyles {
                 }
             }
         }
-        Main.gameFrame.repaint();
+        gameFrame.repaint();
     }
 
     /**

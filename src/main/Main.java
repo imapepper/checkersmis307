@@ -6,14 +6,18 @@ import sockets.GameClient;
 import sockets.GameHost;
 import sockets.multithreading.EstablishConnection;
 import sockets.multithreading.SocketProtocol;
-import utils.GameTimer;
-import utils.Moves;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import static utils.GameVariables.forceJumpEnabled;
+import static utils.GameVariables.timedTurns;
+import static utils.GameVariables.gameFrame;
+import static utils.GameVariables.checkerBoard;
+import static utils.GameVariables.socketProtocol;
 
 /**
  * Runnable class for program and GUI
@@ -25,12 +29,8 @@ import java.net.Socket;
  */
 public class Main {
 
-    public static JFrame gameFrame;
-    public static CheckerBoardPanel checkerBoard;
-
-    public static GameHost host;
-    public static GameClient client;
-    public static SocketProtocol socketProtocol;
+    private static GameHost host;
+    private static GameClient client;
 
     private static JFrame preGameOptions;
     private final static int SOCKET_PORT = 6066;
@@ -47,8 +47,8 @@ public class Main {
         preGameOptions.setResizable(false);
         JPanel cardLayout = new JPanel(new CardLayout());
 
-        JCheckBox forcedJumps = new JCheckBox("Forced Jumps");
-        JCheckBox timedTurns = new JCheckBox("Timed Turns");
+        JCheckBox forcedJumpsBox = new JCheckBox("Forced Jumps");
+        JCheckBox timedTurnsBox = new JCheckBox("Timed Turns");
         JLabel textFieldLabel = new JLabel("Please enter the host to connect to");
         JTextField hostIpField = new JTextField(20);
         hostIpField.setToolTipText("IP Address");
@@ -70,9 +70,9 @@ public class Main {
         tabbedPane.addChangeListener(e -> {
             JComponent selected = (JComponent) tabbedPane.getSelectedComponent();
             if (tabbedPane.getSelectedIndex() == 0 || tabbedPane.getSelectedIndex() == 1) {
-                selected.add(forcedJumps, createConstraints(
+                selected.add(forcedJumpsBox, createConstraints(
                         0, 0, 1, GridBagConstraints.FIRST_LINE_START, 0, 0));
-                selected.add(timedTurns, createConstraints(
+                selected.add(timedTurnsBox, createConstraints(
                         0, 1, 1, GridBagConstraints.FIRST_LINE_END, 0, 0));
             }
             GridBagConstraints buttonConstraints = createConstraints(
@@ -84,8 +84,8 @@ public class Main {
         startGameButton.addActionListener(event -> {
             int gameType = tabbedPane.getSelectedIndex();
             if (gameType == 0) {
-                Moves.forceJumpEnabled = forcedJumps.isSelected();
-                GameTimer.timedTurns = timedTurns.isSelected();
+                forceJumpEnabled = forcedJumpsBox.isSelected();
+                timedTurns = timedTurnsBox.isSelected();
 
                 SocketProtocol.networkGame = false;
                 startGame();
@@ -111,8 +111,8 @@ public class Main {
                     networkGameWaiting.setVisible(true);
                     networkGameWaiting.setPreferredSize(new Dimension(400, 200));
 
-                    Moves.forceJumpEnabled = forcedJumps.isSelected();
-                    GameTimer.timedTurns = timedTurns.isSelected();
+                    forceJumpEnabled = forcedJumpsBox.isSelected();
+                    timedTurns = timedTurnsBox.isSelected();
                     host = new GameHost(SOCKET_PORT);
                     new Thread(new EstablishConnection().setHost(host)).start();
                 } catch (IOException e) {
@@ -168,7 +168,6 @@ public class Main {
             try {
                 if (host != null) {
                     socketProtocol = new SocketProtocol(host.getSocket(), true);
-                    checkerBoard.createNewBoard();
                     checkerBoard.startTimers();
                     gameFrame.setJMenuBar(checkerBoard.initializeMenu());
                 } else {
@@ -179,6 +178,7 @@ public class Main {
                 checkerBoard.statusLabel.setForeground(new Color(255, 0, 0));
             }
         } else {
+            checkerBoard.prepareGame(0);
             gameFrame.setJMenuBar(checkerBoard.initializeMenu());
             gameFrame.addWindowListener(new FrameListener());
         }

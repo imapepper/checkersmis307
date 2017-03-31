@@ -1,9 +1,9 @@
 package eventListeners;
 
-import main.Main;
-
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import static utils.GameVariables.checkerBoard;
 
 public class FrameListener implements WindowListener {
 
@@ -34,7 +34,7 @@ public class FrameListener implements WindowListener {
 
     @Override
     public void windowActivated(WindowEvent e) {
-        Main.checkerBoard.startTimers();
+        checkerBoard.startTimers();
     }
 
     @Override

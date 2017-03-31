@@ -1,14 +1,16 @@
 package eventListeners;
 
 import components.Space;
-import main.Main;
 import objects.CheckerPiece;
+import sockets.multithreading.SocketProtocol;
 import utils.GUIStyles;
 import utils.Moves;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+
+import static utils.GameVariables.*;
 
 /**
  * Event listener class that extends MouseListener to interact with GUI Space components.
@@ -32,43 +34,48 @@ public class SpaceClickListener implements MouseListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!Main.checkerBoard.gameOver) {
-            Space space = (Space) e.getComponent();
-            CheckerPiece piece;
-            if ((piece = space.getPiece()) != null && piece.getPlayer() == Main.checkerBoard.currentPlayer && !multipleJumps) {
-                if (!space.equals(selected)) {
-                    resetSelected();
-                    if (piece.getValidMoves() != null && piece.getValidMoves().length > 0) {
-                        if (Moves.forceJumpEnabled && Moves.jumpMoves.length > 0 && !Arrays.asList(Moves.jumpMoves).contains(space)) {
-                            Main.checkerBoard.statusLabel.setText("Force jumps are enabled and there is a jump available. You must jump.");
-                        } else {
-                            space.changeIcon(true);
-                            highlightValidMoveSpaces(space, true);
-                            selected = space;
+        if (SocketProtocol.networkGame && checkerBoard.currentPlayer == socketProtocol.playerNum) {
+            if (!checkerBoard.gameOver) {
+                Space space = (Space) e.getComponent();
+                CheckerPiece piece;
+                if ((piece = space.getPiece()) != null && piece.getPlayer() == checkerBoard.currentPlayer && !multipleJumps) {
+                    if (!space.equals(selected)) {
+                        resetSelected();
+                        if (piece.getValidMoves() != null && piece.getValidMoves().length > 0) {
+                            if (forceJumpEnabled && Moves.jumpMoves.length > 0 && !Arrays.asList(Moves.jumpMoves)
+                                                                                               .contains(space)) {
+                                checkerBoard.statusLabel.setText("Force jumps are enabled and there is a jump available. You must jump.");
+                            } else {
+                                space.changeIcon(true);
+                                highlightValidMoveSpaces(space, true);
+                                selected = space;
+                            }
                         }
                     }
-                }
-            } else if (space.getPiece() == null && selected != null && selected.getPiece() != null) {
-                Space[] validMoves = selected.getPiece().getValidMoves();
-                if (Arrays.asList(validMoves).contains(space)) {
-                    int fromY = selected.getYCoordinate();
-                    int fromX = selected.getXCoordinate();
-                    int toY = space.getYCoordinate();
-                    int toX = space.getXCoordinate();
-                    if (Moves.isMoveAJump(fromY, fromX, toY, toX)) {
-                        jumpPiece(fromY, fromX, toY, toX);
-                        return;
-                    } else {
-                        Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
-                        changePlayer(false);
-                        return;
+                } else if (space.getPiece() == null && selected != null && selected.getPiece() != null) {
+                    Space[] validMoves = selected.getPiece()
+                                                 .getValidMoves();
+                    if (Arrays.asList(validMoves)
+                              .contains(space)) {
+                        int fromY = selected.getYCoordinate();
+                        int fromX = selected.getXCoordinate();
+                        int toY = space.getYCoordinate();
+                        int toX = space.getXCoordinate();
+                        if (Moves.isMoveAJump(fromY, fromX, toY, toX)) {
+                            jumpPiece(fromY, fromX, toY, toX);
+                            return;
+                        } else {
+                            checkerBoard.movePiece(fromY, fromX, toY, toX);
+                            changePlayer(false);
+                            return;
+                        }
                     }
-                }
-                if (!multipleJumps) {
+                    if (!multipleJumps) {
+                        resetSelected();
+                    }
+                } else if (!multipleJumps) {
                     resetSelected();
                 }
-            } else if (!multipleJumps) {
-                resetSelected();
             }
         }
     }
@@ -108,10 +115,10 @@ public class SpaceClickListener implements MouseListener {
      * @param toX
      */
     private static void jumpPiece(int fromY, int fromX, int toY, int toX) {
-        Main.checkerBoard.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
+        checkerBoard.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
         boolean isKing = selected.getPiece().isKing();
         resetSelected();
-        selected = Main.checkerBoard.movePiece(fromY, fromX, toY, toX);
+        selected = checkerBoard.movePiece(fromY, fromX, toY, toX);
         CheckerPiece piece = selected.getPiece();
         if (!isKing && piece.isKing()) {
             changePlayer(false);
@@ -119,7 +126,7 @@ public class SpaceClickListener implements MouseListener {
             selected.changeIcon(true);
             Space[] newValidMoves = new Space[4];
             int i = 0;
-            Moves.getValidMoves(Main.checkerBoard.getSpaces(), selected);
+            Moves.getValidMoves(checkerBoard.getSpaces(), selected);
             for (Space newMove : piece.getValidMoves()) {
                 if (Moves.isMoveAJump(selected.getYCoordinate(), selected.getXCoordinate(),
                         newMove.getYCoordinate(), newMove.getXCoordinate())) {
@@ -141,7 +148,7 @@ public class SpaceClickListener implements MouseListener {
     public static void changePlayer(boolean timeExpired) {
         resetSelected();
         multipleJumps = false;
-        Main.checkerBoard.changePlayer(timeExpired);
+        checkerBoard.changePlayer(timeExpired);
     }
 
     /**

@@ -5,6 +5,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 
+import static utils.GameVariables.soundsEnabled;
+
 /**
  * Utility class to manage playing sounds and sound file locations
  *
@@ -14,8 +16,6 @@ import java.io.File;
  * 2017-03-15
  */
 public abstract class SoundPlayer {
-
-    public static boolean soundsEnabled;
 
     /**
      * Sound file for when a piece turns into a king

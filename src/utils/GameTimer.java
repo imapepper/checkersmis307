@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
+import static utils.GameVariables.timedTurns;
+
 /**
  * Designed to track the time elapsed during a game.
  * 
@@ -18,8 +20,6 @@ import java.text.SimpleDateFormat;
  * 2017-03-20
  */
 public class GameTimer {
-    public static boolean timedTurns;
-
 	private long startTime;
 	private long stopTime;
 
