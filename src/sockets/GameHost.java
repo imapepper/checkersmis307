@@ -1,29 +1,31 @@
 package sockets;
 
 import main.Main;
+import sockets.multithreading.SocketProtocol;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-public class GameHost extends Thread {
+public class GameHost {
 
-    private Socket server;
-    private ServerSocket serverSocket;
+    private Socket host;
+    private ServerSocket hostSocket;
 
     public GameHost(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
-        serverSocket.setSoTimeout(5000);
+        hostSocket = new ServerSocket(port);
+        hostSocket.setSoTimeout(5000);
+    }
+
+    public Socket getSocket() {
+        return host;
     }
 
     public void waitForConnection() {
-        while (server == null) {
+        while (host == null) {
             try {
-                server = serverSocket.accept();
+                host = hostSocket.accept();
                 break;
             } catch (SocketTimeoutException ignored) {
             } catch (IOException e) {
@@ -36,32 +38,7 @@ public class GameHost extends Thread {
                 }
             }
         }
-        Main.startGame(true);
-    }
-
-    public void run() {
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
-            PrintWriter out = new PrintWriter(server.getOutputStream(), true);
-            System.out.println("Connected to " + server.getRemoteSocketAddress());
-
-            SocketProtocol socketProtocol = new SocketProtocol();
-
-            String input;
-            while (!"Quit".equals(input = in.readLine())) {
-                socketProtocol.processInput(input);
-                out.println("Message received");
-            }
-            try {
-                System.out.println("Client disconnected");
-                out.println("Thank you for connecting to " + server.getLocalSocketAddress()
-                        + "\nGoodbye!");
-                server.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SocketProtocol.networkGame = true;
+        Main.startGame();
     }
 }

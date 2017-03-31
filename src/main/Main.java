@@ -1,11 +1,11 @@
 package main;
 
-import async.AwaitJoinRequest;
-import async.FindHost;
 import components.CheckerBoardPanel;
 import eventListeners.FrameListener;
 import sockets.GameClient;
 import sockets.GameHost;
+import sockets.multithreading.EstablishConnection;
+import sockets.multithreading.SocketProtocol;
 import utils.GameTimer;
 import utils.Moves;
 
@@ -27,8 +27,10 @@ public class Main {
 
     public static JFrame gameFrame;
     public static CheckerBoardPanel checkerBoard;
+
     public static GameHost host;
     public static GameClient client;
+    public static SocketProtocol socketProtocol;
 
     private static JFrame preGameOptions;
     private final static int SOCKET_PORT = 6066;
@@ -84,7 +86,9 @@ public class Main {
             if (gameType == 0) {
                 Moves.forceJumpEnabled = forcedJumps.isSelected();
                 GameTimer.timedTurns = timedTurns.isSelected();
-                startGame(false);
+
+                SocketProtocol.networkGame = false;
+                startGame();
             } else if (gameType == 1) {
                 try {
                     tabbedPane.setVisible(false);
@@ -110,8 +114,7 @@ public class Main {
                     Moves.forceJumpEnabled = forcedJumps.isSelected();
                     GameTimer.timedTurns = timedTurns.isSelected();
                     host = new GameHost(SOCKET_PORT);
-                    host.start();
-                    new Thread(new AwaitJoinRequest()).start();
+                    new Thread(new EstablishConnection().setHost(host)).start();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -132,7 +135,7 @@ public class Main {
                         e.printStackTrace();
                     }
                     client = new GameClient(hostIp, SOCKET_PORT);
-                    new Thread(new FindHost()).start();
+                    new Thread(new EstablishConnection().setClient(client)).start();
                 } else {
                     hostIpField.setBackground(new Color(255, 214, 219));
                 }
@@ -156,8 +159,20 @@ public class Main {
         preGameOptions.setVisible(true);
     }
 
-    public static void startGame(boolean networkGame) {
+    public static void startGame() {
         preGameOptions.dispose();
+        if (SocketProtocol.networkGame) {
+            try {
+                if (host != null) {
+                    socketProtocol = new SocketProtocol(host.getSocket(), true);
+                } else {
+                    socketProtocol = new SocketProtocol(client.getSocket(), false);
+                }
+            } catch (IOException e) {
+                checkerBoard.statusLabel.setText("Failed to open stream between sockets. Please restart and try again.");
+                checkerBoard.statusLabel.setForeground(new Color(255, 0, 0));
+            }
+        }
         gameFrame = new JFrame();
         gameFrame.addWindowListener(new FrameListener());
         checkerBoard = new CheckerBoardPanel();

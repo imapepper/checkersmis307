@@ -143,9 +143,16 @@ public class CheckerBoardPanel extends JPanel {
 
     	JCheckBox toggleSounds = new JCheckBox("Sounds?");
     	JCheckBox toggleBlackLightMode = new JCheckBox("Black light Mode?");
+    	JCheckBox forcedJumps = new JCheckBox("Forced Jumps?");
+        JCheckBox timedTurns = new JCheckBox("Timed Turns?");
 
     	toggleSounds.setSelected(true);
     	toggleBlackLightMode.setSelected(false);
+    	forcedJumps.setSelected(Moves.forceJumpEnabled);
+    	timedTurns.setSelected(GameTimer.timedTurns);
+
+    	forcedJumps.setEnabled(false);
+    	timedTurns.setEnabled(false);
 
     	toggleSounds.addActionListener(e -> {
             SoundPlayer.soundsEnabled = toggleSounds.isSelected();
@@ -164,6 +171,7 @@ public class CheckerBoardPanel extends JPanel {
 
         settings.add(toggleSounds);
         settings.add(toggleBlackLightMode);
+        settings.add(new JSeparator());
         menuBar.add(settings);
     }
     
