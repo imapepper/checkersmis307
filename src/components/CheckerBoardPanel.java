@@ -54,7 +54,6 @@ public class CheckerBoardPanel extends JPanel {
         initializeStatus();
         initializeBoardGUI();
         decideWhoMovesFirst();
-        initializeMenu();
         Moves.findAllMovesForPlayer(currentPlayer);
     }
 
@@ -137,7 +136,7 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
-    private void initializeMenu() {
+    public JMenuBar initializeMenu() {
     	menuBar = new JMenuBar();
     	JMenu settings = new JMenu("Settings");
 
@@ -172,7 +171,10 @@ public class CheckerBoardPanel extends JPanel {
         settings.add(toggleSounds);
         settings.add(toggleBlackLightMode);
         settings.add(new JSeparator());
+        settings.add(forcedJumps);
+        settings.add(timedTurns);
         menuBar.add(settings);
+        return menuBar;
     }
     
     private void displayEndGameOptions(String title) {

@@ -161,10 +161,16 @@ public class Main {
 
     public static void startGame() {
         preGameOptions.dispose();
+        gameFrame = new JFrame();
+        checkerBoard = new CheckerBoardPanel();
+
         if (SocketProtocol.networkGame) {
             try {
                 if (host != null) {
                     socketProtocol = new SocketProtocol(host.getSocket(), true);
+                    checkerBoard.createNewBoard();
+                    checkerBoard.startTimers();
+                    gameFrame.setJMenuBar(checkerBoard.initializeMenu());
                 } else {
                     socketProtocol = new SocketProtocol(client.getSocket(), false);
                 }
@@ -172,18 +178,16 @@ public class Main {
                 checkerBoard.statusLabel.setText("Failed to open stream between sockets. Please restart and try again.");
                 checkerBoard.statusLabel.setForeground(new Color(255, 0, 0));
             }
+        } else {
+            gameFrame.setJMenuBar(checkerBoard.initializeMenu());
+            gameFrame.addWindowListener(new FrameListener());
         }
-        gameFrame = new JFrame();
-        gameFrame.addWindowListener(new FrameListener());
-        checkerBoard = new CheckerBoardPanel();
-        checkerBoard.createNewBoard();
 
         gameFrame.add(checkerBoard);
         gameFrame.setExtendedState(gameFrame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
         gameFrame.setMinimumSize(new Dimension(800, 800));
         gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         gameFrame.setVisible(true);
-        gameFrame.setJMenuBar(checkerBoard.menuBar);
     }
 
     public static GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth, int anchor, int ipadY, int ipadX) {
