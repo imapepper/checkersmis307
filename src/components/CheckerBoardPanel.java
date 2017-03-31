@@ -243,7 +243,7 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     public void changePlayer(boolean turnTimeExpired) {
-        if (socketProtocol.playerNum == currentPlayer) {
+        if (networkGame && socketProtocol.playerNum == currentPlayer) {
             socketProtocol.sendMessage(
                     Json.createObjectBuilder()
                         .add("message", "changePlayer")
