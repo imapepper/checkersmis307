@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
  * 2017-03-20
  */
 public class GameTimer {
+    public static boolean timedTurns;
+
 	private long startTime;
 	private long stopTime;
 
@@ -51,13 +53,15 @@ public class GameTimer {
 	}
 
 	public void startTurn() {
-	    if(currentTime == null) {
-            String formattedTime = new SimpleDateFormat("mm:ss").format(0);
-            turnStartTime = Integer.parseInt(formattedTime.substring(0, 2)) * 60 + Integer.parseInt(formattedTime.substring(3));
-        } else {
-            turnStartTime = currentTime;
+	    if (timedTurns) {
+            if (currentTime == null) {
+                String formattedTime = new SimpleDateFormat("mm:ss").format(0);
+                turnStartTime = Integer.parseInt(formattedTime.substring(0, 2)) * 60 + Integer.parseInt(formattedTime.substring(3));
+            } else {
+                turnStartTime = currentTime;
+            }
+            turnTimerLabel.setText("Turn Time: 30");
         }
-        turnTimerLabel.setText("Turn Time: 30");
     }
 
     public void startTimer() {

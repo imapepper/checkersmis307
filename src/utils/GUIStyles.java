@@ -45,7 +45,7 @@ public abstract class GUIStyles {
                 }
             }
         }
-        Main.frame.repaint();
+        Main.gameFrame.repaint();
     }
 
     /**

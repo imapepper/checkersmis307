@@ -47,7 +47,6 @@ public class CheckerBoardPanel extends JPanel {
         gameOver = false;
         numPlayer1Pieces = 12;
         numPlayer2Pieces = 12;
-        Moves.forceJumpEnabled = true;
         SoundPlayer.soundsEnabled = true;
 
         initializeSpaces();
@@ -105,16 +104,16 @@ public class CheckerBoardPanel extends JPanel {
     private void initializeStatus() {
     	statusLabel = new JLabel("Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    	add(statusLabel, createConstraints(0, 0, 8));
+    	add(statusLabel, Main.createConstraints(0, 0, 8, GridBagConstraints.CENTER, 50, 50));
         timerLabel = new JLabel();
-        add(timerLabel, createConstraints(1, 0, 1));
+        add(timerLabel, Main.createConstraints(1, 0, 1, GridBagConstraints.CENTER, 50, 50));
     	player1Status = new JLabel("Player 1 Pieces: " + numPlayer1Pieces);
-    	add(player1Status, createConstraints(3, 0, 1));
+    	add(player1Status, Main.createConstraints(3, 0, 1, GridBagConstraints.CENTER, 50, 50));
     	player2Status = new JLabel("Player 2 Pieces: " + numPlayer2Pieces);
     	player2Status.setForeground(Color.RED);
-    	add(player2Status, createConstraints(4, 0, 1));
+    	add(player2Status, Main.createConstraints(4, 0, 1, GridBagConstraints.CENTER, 50, 50));
     	turnTimeLabel = new JLabel();
-    	add(turnTimeLabel, createConstraints(2, 0, 1));
+    	add(turnTimeLabel, Main.createConstraints(2, 0, 1, GridBagConstraints.CENTER, 50, 50));
     }
     
     private void initializeBoardGUI() {
@@ -122,7 +121,7 @@ public class CheckerBoardPanel extends JPanel {
             for (int j = 0; j < 8; j++) {
                 Space space = spaces[i][j];
                 space.addMouseListener(new SpaceClickListener());
-                add(space, createConstraints(i + 1, j + 1, 1));
+                add(space, Main.createConstraints(i + 1, j + 1, 1, GridBagConstraints.CENTER, 50, 50));
             }
         }
     }
@@ -143,27 +142,16 @@ public class CheckerBoardPanel extends JPanel {
     	JMenu settings = new JMenu("Settings");
 
     	JCheckBox toggleSounds = new JCheckBox("Sounds?");
-    	JCheckBox toggleJumps = new JCheckBox("Forced Jumps?");
     	JCheckBox toggleBlackLightMode = new JCheckBox("Black light Mode?");
 
     	toggleSounds.setSelected(true);
-    	toggleJumps.setSelected(true);
     	toggleBlackLightMode.setSelected(false);
 
-    	toggleJumps.addActionListener(e -> {
-    		JCheckBox toggle = (JCheckBox) e.getSource();
-            Moves.forceJumpEnabled = toggle.isSelected();
-            Moves.findAllMovesForPlayer(currentPlayer);
-            SpaceClickListener.resetSelected();
-            statusLabel.setText("Player " + currentPlayer + "\'s Turn!");
-    	});
     	toggleSounds.addActionListener(e -> {
-    		JToggleButton toggle = (JToggleButton) e.getSource();
-            SoundPlayer.soundsEnabled = toggle.isSelected();
+            SoundPlayer.soundsEnabled = toggleSounds.isSelected();
     	});
     	toggleBlackLightMode.addActionListener(e -> {
-    	    JToggleButton toggle = (JToggleButton) e.getSource();
-    	    boolean blackLightMode = toggle.isSelected();
+    	    boolean blackLightMode = toggleBlackLightMode.isSelected();
     	    if(blackLightMode) {
     	    	player1Status.setForeground(new Color(170, 0, 255));
     	    	player2Status.setForeground(new Color(255, 0, 170));
@@ -171,10 +159,9 @@ public class CheckerBoardPanel extends JPanel {
     	    	player1Status.setForeground(Color.BLACK);
     	    	player2Status.setForeground(Color.RED);
     	    }
-    	    GUIStyles.setBlackLightModeEnabled(toggle.isSelected());
+    	    GUIStyles.setBlackLightModeEnabled(blackLightMode);
         });
 
-        settings.add(toggleJumps);
         settings.add(toggleSounds);
         settings.add(toggleBlackLightMode);
         menuBar.add(settings);
@@ -200,18 +187,12 @@ public class CheckerBoardPanel extends JPanel {
             CheckerBoardPanel checkerBoard = new CheckerBoardPanel();
             Main.checkerBoard = checkerBoard;
             checkerBoard.createNewBoard();
-            Main.frame.setContentPane(checkerBoard);
-            Main.frame.invalidate();
-            Main.frame.validate();
+            Main.gameFrame.setContentPane(checkerBoard);
+            Main.gameFrame.invalidate();
+            Main.gameFrame.validate();
             endGameFrame.dispose();
         });
         exit.addActionListener(e -> System.exit(0));
-      } 
-
-    private GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth) {
-        return new GridBagConstraints(gridX, gridY, gridWidth, 1,
-                0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 50, 50);
     }
 
     private void updatePlayerStatus() {
