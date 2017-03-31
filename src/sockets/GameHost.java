@@ -1,12 +1,13 @@
 package sockets;
 
 import main.Main;
-import sockets.multithreading.SocketProtocol;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+
+import static utils.GameVariables.networkGame;
 
 public class GameHost {
 
@@ -38,7 +39,7 @@ public class GameHost {
                 }
             }
         }
-        SocketProtocol.networkGame = true;
+        networkGame = true;
         Main.startGame();
     }
 }

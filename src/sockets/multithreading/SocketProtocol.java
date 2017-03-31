@@ -9,7 +9,6 @@ import static utils.GameVariables.*;
 
 public class SocketProtocol implements Runnable {
 
-    public static boolean networkGame;
     public int playerNum;
 
     private Socket socket;

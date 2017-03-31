@@ -2,7 +2,6 @@ package eventListeners;
 
 import components.Space;
 import objects.CheckerPiece;
-import sockets.multithreading.SocketProtocol;
 import utils.GUIStyles;
 import utils.Moves;
 
@@ -34,7 +33,7 @@ public class SpaceClickListener implements MouseListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (SocketProtocol.networkGame && checkerBoard.currentPlayer == socketProtocol.playerNum) {
+        if (!networkGame || checkerBoard.currentPlayer == socketProtocol.playerNum) {
             if (!checkerBoard.gameOver) {
                 Space space = (Space) e.getComponent();
                 CheckerPiece piece;

@@ -17,4 +17,5 @@ public class GameVariables {
     public static CheckerBoardPanel checkerBoard;
 
     public static SocketProtocol socketProtocol;
+    public static boolean networkGame;
 }

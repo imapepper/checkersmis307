@@ -13,11 +13,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import static utils.GameVariables.forceJumpEnabled;
-import static utils.GameVariables.timedTurns;
-import static utils.GameVariables.gameFrame;
-import static utils.GameVariables.checkerBoard;
-import static utils.GameVariables.socketProtocol;
+import static utils.GameVariables.*;
 
 /**
  * Runnable class for program and GUI
@@ -87,7 +83,7 @@ public class Main {
                 forceJumpEnabled = forcedJumpsBox.isSelected();
                 timedTurns = timedTurnsBox.isSelected();
 
-                SocketProtocol.networkGame = false;
+                networkGame = false;
                 startGame();
             } else if (gameType == 1) {
                 try {
@@ -164,7 +160,7 @@ public class Main {
         gameFrame = new JFrame();
         checkerBoard = new CheckerBoardPanel();
 
-        if (SocketProtocol.networkGame) {
+        if (networkGame) {
             try {
                 if (host != null) {
                     socketProtocol = new SocketProtocol(host.getSocket(), true);
