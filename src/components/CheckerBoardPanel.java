@@ -185,7 +185,7 @@ public class CheckerBoardPanel extends JPanel {
         return menuBar;
     }
     
-    private void displayEndGameOptions(String title) {
+    public void displayEndGameOptions(String title, int losingPlayer, boolean playAgainOption) {
         SoundPlayer.victorySoundEffect();
         JButton playAgain = new JButton("Play Again");
         JButton exit = new JButton("Exit");
@@ -193,24 +193,49 @@ public class CheckerBoardPanel extends JPanel {
         endGameFrame = new JFrame();
         endGameFrame.setTitle(title);
         endGameFrame.setSize(250, 75);
-        endGameFrame.setVisible(true);
         endGameFrame.setLayout(new BorderLayout());
-        endGameFrame.add(playAgain, BorderLayout.NORTH);
+        if (playAgainOption) {
+            endGameFrame.add(playAgain, BorderLayout.NORTH);
+        }
         endGameFrame.add(exit, BorderLayout.SOUTH);
-        endGameFrame.setLocation(400, 350);     
+        endGameFrame.setLocation(400, 350);
         endGameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         endGameFrame.setResizable(false);
+        endGameFrame.setVisible(true);
 
         playAgain.addActionListener(e -> {
-            CheckerBoardPanel checkerBoard = new CheckerBoardPanel();
-            checkerBoard = checkerBoard;
-            checkerBoard.prepareGame(0);
+            checkerBoard = new CheckerBoardPanel();
+
+            checkerBoard.prepareGame(losingPlayer);
             gameFrame.setContentPane(checkerBoard);
             gameFrame.invalidate();
             gameFrame.validate();
             endGameFrame.dispose();
+            if (networkGame && socketProtocol.isHost()) {
+                socketProtocol.sendMessage(
+                        Json.createObjectBuilder()
+                            .add("message", "newGame")
+                            .add("startingPlayer", losingPlayer)
+                            .build().toString()
+                );
+            } else if (networkGame) {
+                socketProtocol.sendMessage(
+                        Json.createObjectBuilder()
+                            .add("message", "acceptNewGame")
+                            .build().toString()
+                );
+            }
         });
-        exit.addActionListener(e -> System.exit(0));
+        exit.addActionListener(e -> {
+            if (networkGame && playAgainOption) {
+                socketProtocol.sendMessage(
+                        Json.createObjectBuilder()
+                            .add("message", "goodbye")
+                            .build().toString()
+                );
+            }
+            System.exit(0);
+        });
     }
 
     private void updatePlayerStatus() {
@@ -219,6 +244,17 @@ public class CheckerBoardPanel extends JPanel {
     }
     
     public Space movePiece(int fromY, int fromX, int toY, int toX) {
+        if (networkGame && socketProtocol.playerNum == currentPlayer) {
+            socketProtocol.sendMessage(
+                    Json.createObjectBuilder()
+                        .add("message", "movePiece")
+                        .add("fromY", fromY)
+                        .add("fromX", fromX)
+                        .add("toY", toY)
+                        .add("toX", toX)
+                        .build().toString()
+            );
+        }
         if (spaces[fromY - 1][fromX - 1].getPiece() == null) {
             throw new IllegalArgumentException("There is no piece to move on that space");
         }
@@ -233,6 +269,15 @@ public class CheckerBoardPanel extends JPanel {
     }
 
     public void removePiece(int fromY, int fromX) {
+        if (networkGame && socketProtocol.playerNum == currentPlayer) {
+            socketProtocol.sendMessage(
+                    Json.createObjectBuilder()
+                        .add("message", "removePiece")
+                        .add("fromY", fromY)
+                        .add("fromX", fromX)
+                        .build().toString()
+            );
+        }
         CheckerPiece removedPiece = spaces[fromY - 1][fromX - 1].removePiece();
         if (removedPiece.getPlayer() == 1) {
             numPlayer1Pieces--;
@@ -248,8 +293,7 @@ public class CheckerBoardPanel extends JPanel {
                     Json.createObjectBuilder()
                         .add("message", "changePlayer")
                         .add("turnTimeExpired", turnTimeExpired)
-                        .build()
-                        .toString()
+                        .build().toString()
             );
         }
         checkGameOver();
@@ -263,7 +307,7 @@ public class CheckerBoardPanel extends JPanel {
             Space[] movesForPlayer = Moves.findAllMovesForPlayer(currentPlayer);
             if (movesForPlayer.length == 0) {
                 gameOver = true;
-                displayEndGameOptions("Player " + currentPlayer + " Forfeits.");
+                displayEndGameOptions("Player " + currentPlayer + " Forfeits.", currentPlayer, true);
                 timer.stopTimer();
             }
             timer.startTurn();
@@ -275,14 +319,18 @@ public class CheckerBoardPanel extends JPanel {
             String title = "Player 2 Wins!";
             statusLabel.setText(title);
             gameOver = true;
-            displayEndGameOptions(title);
+            if (!networkGame || socketProtocol.isHost()) {
+                displayEndGameOptions(title, 1, true);
+            }
             timer.stopTimer();
         }
         if (numPlayer2Pieces == 0) {
             String title = "Player 1 Wins!";
             statusLabel.setText(title);
             gameOver = true;
-            displayEndGameOptions(title);
+            if (!networkGame || socketProtocol.isHost()) {
+                displayEndGameOptions(title, 2, true);
+            }
             timer.stopTimer();
         }
     }

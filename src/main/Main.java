@@ -164,8 +164,6 @@ public class Main {
             try {
                 if (host != null) {
                     socketProtocol = new SocketProtocol(host.getSocket(), true);
-                    checkerBoard.startTimers();
-                    gameFrame.setJMenuBar(checkerBoard.initializeMenu());
                 } else {
                     socketProtocol = new SocketProtocol(client.getSocket(), false);
                 }

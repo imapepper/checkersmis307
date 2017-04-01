@@ -37,25 +37,15 @@ public class SocketProtocol implements Runnable {
             sendMessage(preGameInfo);
             String startGame = Json.createObjectBuilder().add("message", "startGame").build().toString();
             sendMessage(startGame);
+            checkerBoard.startTimers();
+            gameFrame.setJMenuBar(checkerBoard.initializeMenu());
         } else {
             playerNum = 2;
         }
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
     public boolean isHost() {
         return host;
-    }
-
-    public BufferedReader getIn() {
-        return in;
-    }
-
-    public PrintWriter getOut() {
-        return out;
     }
 
     @Override
@@ -81,7 +71,7 @@ public class SocketProtocol implements Runnable {
         }
     }
 
-    public void processMessage(String json) {
+    private void processMessage(String json) {
         System.out.println(json);
         JsonObject jsonObject = Json.createReader(new StringReader(json)).readObject();
         String message = jsonObject.getString("message");
@@ -95,6 +85,27 @@ public class SocketProtocol implements Runnable {
             checkerBoard.startTimers();
         } else if ("changePlayer".equals(message)) {
             checkerBoard.changePlayer(jsonObject.getBoolean("turnTimeExpired"));
+        } else if ("movePiece".equals(message)) {
+            checkerBoard.movePiece(
+                    jsonObject.getInt("fromY"),
+                    jsonObject.getInt("fromX"),
+                    jsonObject.getInt("toY"),
+                    jsonObject.getInt("toX")
+            );
+        } else if ("removePiece".equals(message)) {
+            checkerBoard.removePiece(
+                    jsonObject.getInt("fromY"),
+                    jsonObject.getInt("fromX")
+            );
+        } else if ("newGame".equals(message)) {
+            checkerBoard.displayEndGameOptions("Opponent wants to play again!",
+                    jsonObject.getInt("startingPlayer"), true);
+        } else if ("acceptNewGame".equals(message)) {
+            String startGame = Json.createObjectBuilder().add("message", "startGame").build().toString();
+            sendMessage(startGame);
+            checkerBoard.startTimers();
+        } else if ("goodbye".equals(message)) {
+            checkerBoard.displayEndGameOptions("Opponent Quit", 0, false);
         }
     }
 

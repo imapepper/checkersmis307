@@ -52,10 +52,8 @@ public class SpaceClickListener implements MouseListener {
                         }
                     }
                 } else if (space.getPiece() == null && selected != null && selected.getPiece() != null) {
-                    Space[] validMoves = selected.getPiece()
-                                                 .getValidMoves();
-                    if (Arrays.asList(validMoves)
-                              .contains(space)) {
+                    Space[] validMoves = selected.getPiece().getValidMoves();
+                    if (Arrays.asList(validMoves).contains(space)) {
                         int fromY = selected.getYCoordinate();
                         int fromX = selected.getXCoordinate();
                         int toY = space.getYCoordinate();
