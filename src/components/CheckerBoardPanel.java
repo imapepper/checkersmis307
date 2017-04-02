@@ -52,6 +52,7 @@ public class CheckerBoardPanel extends JPanel {
         numPlayer2Pieces = 12;
         soundsEnabled = true;
 
+        setBackground(new Color(130, 148, 178));
         initializeSpaces();
         setLayout(new GridBagLayout());
         initializeStatus();
@@ -111,15 +112,33 @@ public class CheckerBoardPanel extends JPanel {
     private void initializeStatus() {
     	statusLabel = new JLabel("Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        statusLabel.setFont(new Font("Serif", Font.BOLD, 14));
     	add(statusLabel, Main.createConstraints(0, 0, 8, GridBagConstraints.CENTER, 50, 50));
-        timerLabel = new JLabel();
-        add(timerLabel, Main.createConstraints(1, 0, 1, GridBagConstraints.CENTER, 50, 50));
+
     	player1Status = new JLabel("Player 1 Pieces: " + numPlayer1Pieces);
-    	add(player1Status, Main.createConstraints(3, 0, 1, GridBagConstraints.CENTER, 50, 50));
+        player1Status.setHorizontalAlignment(SwingConstants.CENTER);
+        player1Status.setFont(new Font("SansSerif", Font.BOLD, 12));
+        player1Status.setOpaque(true);
+        player1Status.setBackground(new Color(182, 182, 182));
+        player1Status.setBorder(BorderFactory.createLineBorder(new Color(92, 92, 92), 5));
+    	add(player1Status, Main.createConstraints(4, 0, 1, GridBagConstraints.CENTER, 50, 50));
+
     	player2Status = new JLabel("Player 2 Pieces: " + numPlayer2Pieces);
-    	player2Status.setForeground(Color.RED);
-    	add(player2Status, Main.createConstraints(4, 0, 1, GridBagConstraints.CENTER, 50, 50));
+    	player2Status.setHorizontalAlignment(SwingConstants.CENTER);
+        player2Status.setFont(new Font("SansSerif", Font.BOLD, 12));
+        player2Status.setOpaque(true);
+        player2Status.setForeground(new Color(200, 0, 0));
+        player2Status.setBackground(new Color(103, 0, 0));
+        player2Status.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+    	add(player2Status, Main.createConstraints(5, 0, 1, GridBagConstraints.CENTER, 50, 50));
+
+        timerLabel = new JLabel();
+        timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        timerLabel.setFont(new Font("Serif", Font.BOLD, 12));
+        add(timerLabel, Main.createConstraints(1, 0, 1, GridBagConstraints.CENTER, 50, 50));
     	turnTimeLabel = new JLabel();
+        turnTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        turnTimeLabel.setFont(new Font("Serif", Font.BOLD, 12));
     	add(turnTimeLabel, Main.createConstraints(2, 0, 1, GridBagConstraints.CENTER, 50, 50));
     }
     
@@ -167,11 +186,27 @@ public class CheckerBoardPanel extends JPanel {
     	toggleBlackLightMode.addActionListener(e -> {
     	    boolean blackLightMode = toggleBlackLightMode.isSelected();
     	    if(blackLightMode) {
+                setBackground(new Color(0, 110, 12));
+                statusLabel.setForeground(Color.WHITE);
+                timerLabel.setForeground(Color.WHITE);
+                turnTimeLabel.setForeground(Color.WHITE);
     	    	player1Status.setForeground(new Color(170, 0, 255));
+                player1Status.setBackground(new Color(74, 0, 119));
+                player1Status.setBorder(BorderFactory.createLineBorder(new Color(57, 0, 87), 5));
     	    	player2Status.setForeground(new Color(255, 0, 170));
+                player2Status.setBackground(new Color(119, 0, 79));
+                player2Status.setBorder(BorderFactory.createLineBorder(new Color(112, 0, 57), 5));
     	    } else {
+                setBackground(new Color(130, 148, 178));
+                statusLabel.setForeground(Color.BLACK);
+                timerLabel.setForeground(Color.BLACK);
+                turnTimeLabel.setForeground(Color.BLACK);
     	    	player1Status.setForeground(Color.BLACK);
-    	    	player2Status.setForeground(Color.RED);
+                player1Status.setBackground(new Color(182, 182, 182));
+                player1Status.setBorder(BorderFactory.createLineBorder(new Color(92, 92, 92), 5));
+                player2Status.setForeground(new Color(200, 0, 0));
+                player2Status.setBackground(new Color(103, 0, 0));
+                player2Status.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
     	    }
     	    setBlackLightModeEnabled(blackLightMode);
         });

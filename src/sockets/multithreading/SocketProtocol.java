@@ -72,7 +72,6 @@ public class SocketProtocol implements Runnable {
     }
 
     private void processMessage(String json) {
-        System.out.println(json);
         JsonObject jsonObject = Json.createReader(new StringReader(json)).readObject();
         String message = jsonObject.getString("message");
 

@@ -4,9 +4,7 @@ package utils;
 import eventListeners.SpaceClickListener;
 
 import javax.swing.*;
-
-import java.awt.Font;
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.text.SimpleDateFormat;
 
 import static utils.GameVariables.timedTurns;
@@ -20,6 +18,7 @@ import static utils.GameVariables.timedTurns;
  * 2017-03-20
  */
 public class GameTimer {
+
 	private long startTime;
 	private long stopTime;
 
@@ -28,28 +27,27 @@ public class GameTimer {
     private Integer turnStartTime;
     private JLabel timerLabel;
     private JLabel turnTimerLabel;
-    private Font boldFont = new Font("Serif", Font.BOLD, 14);
-	private Timer timer;
+    private Timer timer;
 
 	public GameTimer(JLabel timerLabel, JLabel turnTimerLabel) {
 	    this.timerLabel = timerLabel;
 	    this.turnTimerLabel = turnTimerLabel;
-        turnTimerLabel.setFont(boldFont);
-        ActionListener timerListener;
-        timerListener = e -> {
+ 		timer = new Timer(1000, e -> {
             SimpleDateFormat df = new SimpleDateFormat("mm:ss");
             formattedTime = df.format(System.currentTimeMillis() - startTime);
             currentTime = Integer.parseInt(formattedTime.substring(0, 2)) * 60 + Integer.parseInt(formattedTime.substring(3));
-            if(turnStartTime != null) {
+            if (turnStartTime != null) {
                 int turnTime = 30 - (currentTime - turnStartTime);
-                if(turnTime <= 0) {
+                if (turnTime <= 0) {
                     SpaceClickListener.changePlayer(true);
+                } else if (turnTime <= 10) {
+                    if (turnTime % 2 == 0) turnTimerLabel.setForeground(Color.RED);
+                    else turnTimerLabel.setForeground(Color.BLACK);
                 }
                 turnTimerLabel.setText("Turn Time: " + turnTime);
             }
             timerLabel.setText("Time Elapsed: " + formattedTime);
-        };
- 		timer = new Timer(1000, timerListener);
+        });
 	}
 
 	public void startTurn() {
