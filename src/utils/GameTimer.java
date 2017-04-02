@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 
+import static utils.GameVariables.blackLightModeEnabled;
 import static utils.GameVariables.timedTurns;
 
 /**
@@ -41,8 +42,13 @@ public class GameTimer {
                 if (turnTime <= 0) {
                     SpaceClickListener.changePlayer(true);
                 } else if (turnTime <= 10) {
-                    if (turnTime % 2 == 0) turnTimerLabel.setForeground(Color.RED);
-                    else turnTimerLabel.setForeground(Color.BLACK);
+                    if (blackLightModeEnabled) {
+                        if (turnTime % 2 == 0) turnTimerLabel.setForeground(Color.YELLOW);
+                        else turnTimerLabel.setForeground(Color.BLACK);
+                    } else {
+                        if (turnTime % 2 == 0) turnTimerLabel.setForeground(Color.RED);
+                        else turnTimerLabel.setForeground(Color.WHITE);
+                    }
                 }
                 turnTimerLabel.setText("Turn Time: " + turnTime);
             }
@@ -59,6 +65,8 @@ public class GameTimer {
                 turnStartTime = currentTime;
             }
             turnTimerLabel.setText("Turn Time: 30");
+            if (blackLightModeEnabled) turnTimerLabel.setForeground(Color.WHITE);
+            else turnTimerLabel.setForeground(Color.BLACK);
         }
     }
 
