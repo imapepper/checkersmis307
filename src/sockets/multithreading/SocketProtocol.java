@@ -83,7 +83,9 @@ public class SocketProtocol implements Runnable {
         } else if ("startGame".equals(message)) {
             checkerBoard.startTimers();
         } else if ("changePlayer".equals(message)) {
-            checkerBoard.changePlayer(jsonObject.getBoolean("turnTimeExpired"));
+            if (!jsonObject.getBoolean("turnTimeExpired"))  {
+                checkerBoard.changePlayer(false);
+            }
         } else if ("movePiece".equals(message)) {
             checkerBoard.movePiece(
                     jsonObject.getInt("fromY"),
