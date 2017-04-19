@@ -28,6 +28,8 @@ public class SpaceClickListener implements MouseListener {
 
     /**
      *
+     * Listens for mouse clicks on the gameboard. We use this method to handle when a player clicks on a piece.
+     *
      * @param e MouseEvent object. Required by MouseListener interface. Used to get the component that the listener was
      *          attached to.
      */
@@ -79,6 +81,9 @@ public class SpaceClickListener implements MouseListener {
 
     /**
      *
+     * We "highlight" valid move spaces by changing their color. 
+     * This method handles that aspect of the game accordingly.
+     *
      * @param space
      * @param highlight
      */
@@ -93,6 +98,9 @@ public class SpaceClickListener implements MouseListener {
 
     /**
      *
+     * Called to reset the selected piece to avoid a bug of a player holding a piece after their
+     * time has expired.
+     *
      */
     public static void resetSelected() {
         if (selected != null && selected.getPiece() != null) {
@@ -106,10 +114,14 @@ public class SpaceClickListener implements MouseListener {
 
     /**
      *
-     * @param fromY
-     * @param fromX
-     * @param toY
-     * @param toX
+     * Method for handling the jumping of a piece. Ensures the deletion of the jumped piece
+     * and updates the valid moves remaining.
+     * Additionally allows for multiple jumps
+     *
+     * @param fromY - Y coordinate of where the jumping piece is moving from
+     * @param fromX - Y coordinate of where the jumping piece is moving from
+     * @param toY - Y coordinate of where the jumping piece is moving to
+     * @param toX - X coordinate of where the jumping piece is moving to
      */
     private static void jumpPiece(int fromY, int fromX, int toY, int toX) {
         checkerBoard.removePiece((toY + fromY) / 2, (toX + fromX) / 2);
@@ -142,6 +154,10 @@ public class SpaceClickListener implements MouseListener {
         }
     }
 
+    /**
+     * Handles the changing of a player
+     * @param timeExpired - Checks whether we are changing the player due to expired time
+     */
     public static void changePlayer(boolean timeExpired) {
         resetSelected();
         multipleJumps = false;

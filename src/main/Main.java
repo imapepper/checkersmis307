@@ -155,6 +155,10 @@ public class Main {
         preGameOptions.setVisible(true);
     }
 
+    
+    /**
+     * Method for starting our game. If the game is on the network, then it handles that accordingly.
+     */
     public static void startGame() {
         preGameOptions.dispose();
         gameFrame = new JFrame();
@@ -184,6 +188,16 @@ public class Main {
         gameFrame.setVisible(true);
     }
 
+    /**
+     * Setting the constraints of the Checkerboard grid.
+     * @param gridY - Maximum Y
+     * @param gridX - Maximum X
+     * @param gridWidth - Width of our gridboard
+     * @param anchor - Constraint to position an element at a particular area
+     * @param ipadY - Internal padding
+     * @param ipadX - Internal padding
+     * @return
+     */
     public static GridBagConstraints createConstraints(int gridY, int gridX, int gridWidth, int anchor, int ipadY, int ipadX) {
         return new GridBagConstraints(gridX, gridY, gridWidth, 1,
                 0, 0, anchor, GridBagConstraints.BOTH,
