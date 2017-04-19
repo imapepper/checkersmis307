@@ -23,8 +23,9 @@ import static utils.GameVariables.gameFrame;
 public abstract class GUIStyles {
 
     /**
-     *
-     * @param blackLightMode
+     * Method to check whether or not blackLightMode is enabled on, and if so, re-configures the pieces
+     * accordingly to the colors we configured for black light mode.
+     * @param blackLightMode - Toggle for whether the black light mode is enabled or not.
      */
     public static void setBlackLightModeEnabled(boolean blackLightMode) {
         blackLightModeEnabled = blackLightMode;
@@ -50,8 +51,9 @@ public abstract class GUIStyles {
     }
 
     /**
-     *
-     * @param isPlayable
+     * If the blackLightMode isn't enabled, then set the blackground color to the default.
+     * Otherwise, configure it so that the background color matches our blacklight scheme.
+     * @param isPlayable - Checking to see if the space is a moveable space.
      * @return
      */
     public static Color chooseSpaceBackgroundColor(boolean isPlayable) {
@@ -71,10 +73,10 @@ public abstract class GUIStyles {
     }
 
     /**
-     *
-     * @param player
-     * @param selected
-     * @param isKing
+     * Method for choosing the correct piece icon for the gameboard.
+     * @param player - Checking for the correct player (Either 1 or 2)
+     * @param selected - If the piece if selected, we add a border around the piece
+     * @param isKing - If the piece is a king, we have a unique piece icon for kings
      * @return
      */
     public static ImageIcon choosePieceIcon(int player, boolean selected, boolean isKing) {

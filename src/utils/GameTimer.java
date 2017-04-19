@@ -11,7 +11,8 @@ import static utils.GameVariables.blackLightModeEnabled;
 import static utils.GameVariables.timedTurns;
 
 /**
- * Designed to track the time elapsed during a game.
+ * Designed to track the time elapsed during a game and maintain turn 
+ * countdown timer if enabled by user.
  * 
  * @author Anthony Tuel
  * @author Chase Erickson
@@ -30,6 +31,11 @@ public class GameTimer {
     private JLabel turnTimerLabel;
     private Timer timer;
 
+    /**
+     * Game timer that implements JLabel to update the label on our game frame. 
+     * @param timerLabel - Label we use for the "Time elapsed" on the game frame.
+     * @param turnTimerLabel - Label we use for the "Turn timer" on the game frame.
+     */
 	public GameTimer(JLabel timerLabel, JLabel turnTimerLabel) {
 	    this.timerLabel = timerLabel;
 	    this.turnTimerLabel = turnTimerLabel;
@@ -56,6 +62,11 @@ public class GameTimer {
         });
 	}
 
+	/**
+	 * Checks whether timed turns is on or not.
+	 * If they are, then format the time nicely for our frame.
+	 * Force set the label to 30 so that it looks nice.
+	 */
 	public void startTurn() {
 	    if (timedTurns) {
             if (currentTime == null) {
@@ -70,6 +81,10 @@ public class GameTimer {
         }
     }
 
+	/**
+	 * Method we use to start the timer when the game loads.
+	 * Force set the timerLabel to look nice. 
+	 */
     public void startTimer() {
         startTime = System.currentTimeMillis();
 		timer.start();
@@ -77,11 +92,19 @@ public class GameTimer {
 		
 	}
 
+    /**
+     * Sometimes we need to pause the timer, such as when the game is saved down.
+     * In this method, we are subtracting the time at stop vs the initial game startTime
+     * and then we re-start the timer.
+     */
 	public void resumeTimer() {
 	    startTime = System.currentTimeMillis() - (stopTime - startTime);
 	    timer.start();
     }
 
+	/**
+	 * Stop the timer and record the stop time.
+	 */
 	public void stopTimer() {
 		timer.stop();
 		stopTime = System.currentTimeMillis();
