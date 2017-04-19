@@ -8,9 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-import static utils.GameVariables.blackLightModeEnabled;
-import static utils.GameVariables.checkerBoard;
-import static utils.GameVariables.gameFrame;
+import static utils.GameVariables.*;
 
 /**
  * Utility class to manage image file locations and background colors
@@ -80,7 +78,8 @@ public abstract class GUIStyles {
      * @return
      */
     public static ImageIcon choosePieceIcon(int player, boolean selected, boolean isKing) {
-        return new ImageIcon("resources/img/p" + player + (selected ? "Selected" : "") +
-                (isKing ? "King" : "") + "Piece" + (blackLightModeEnabled ? "BL" : "") + ".png");
+        String path = "/img/p" + player + (selected ? "Selected" : "") +
+                (isKing ? "King" : "") + "Piece" + (blackLightModeEnabled ? "BL" : "") + ".png";
+        return new ImageIcon(GUIStyles.class.getClass().getResource(path));
     }
 }

@@ -7,6 +7,14 @@ import java.net.Socket;
 
 import static utils.GameVariables.*;
 
+/**
+ * Asynchronous class that manages communication between sockets using JSON.
+ *
+ * @author Chase Erickson
+ * @author Joseph Hage
+ * @author Anthony Tuel
+ * 2017-03-31
+ */
 public class SocketProtocol implements Runnable {
 
     public int playerNum;
@@ -17,6 +25,14 @@ public class SocketProtocol implements Runnable {
     private PrintWriter out;
     private boolean activeGame;
 
+    /**
+     * Creates input and output streams and creates an asynchronous thread to listen for messages.
+     * If player is host, sends initial game settings set by host to client. Then starts game.
+     *
+     * @param socket Socket for the local player
+     * @param host boolean. True if player is host
+     * @throws IOException Exception from getInputStream and getOutputStream
+     */
     public SocketProtocol(Socket socket, boolean host) throws IOException {
         this.socket = socket;
         this.host = host;
@@ -44,10 +60,18 @@ public class SocketProtocol implements Runnable {
         }
     }
 
+    /**
+     * Checks to see if the player is a host.
+     *
+     * @return boolean if the player is host.
+     */
     public boolean isHost() {
         return host;
     }
 
+    /**
+     * Asynchronous implementation method for checking for messages.
+     */
     @Override
     public void run() {
         while (activeGame) {
@@ -71,6 +95,12 @@ public class SocketProtocol implements Runnable {
         }
     }
 
+    /**
+     * Processes a JSON message from the other socket and executes methods or sets variables
+     * based on the message received.
+     *
+     * @param json String that contains a JSON representation of data.
+     */
     private void processMessage(String json) {
         JsonObject jsonObject = Json.createReader(new StringReader(json)).readObject();
         String message = jsonObject.getString("message");
@@ -110,6 +140,10 @@ public class SocketProtocol implements Runnable {
         }
     }
 
+    /**
+     *
+     * @param message that is a String containing a JSON message.
+     */
     public void sendMessage(String message) {
         while (activeGame) {
             if (socket.isConnected()) {
