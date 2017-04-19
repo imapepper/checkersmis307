@@ -42,10 +42,20 @@ public class CheckerBoardPanel extends JPanel {
     public boolean gameOver;
     public JMenuBar menuBar;
 
+    /**
+     * Gets all the spaces on the board
+     * @return spaces for the board
+     */
     public Space[][] getSpaces() {
         return spaces;
     }
 
+    /**
+     * Set the game state and build the board and pieces
+     * If no starting player, call the method to determine one
+     * Then find all the moves that the current player could make
+     * @param startingPlayer Start at 0, call decideWhoMovesFirst to determine order
+     */
     public void prepareGame(int startingPlayer) {
         gameOver = false;
         numPlayer1Pieces = 12;
@@ -66,6 +76,9 @@ public class CheckerBoardPanel extends JPanel {
         Moves.findAllMovesForPlayer(currentPlayer);
     }
 
+    /**
+     * Set and start the game timers
+     */
     public void startTimers() {
         if (timer == null) {
             timer = new GameTimer(timerLabel, turnTimeLabel);
@@ -80,6 +93,9 @@ public class CheckerBoardPanel extends JPanel {
 //        }
 //    }
 
+    /**
+     * Initialize all the spaces on the board and add pieces to the first two rows on both sides.
+     */
     private void initializeSpaces() {
         spaces = new Space[8][8];
         int index = 0;
@@ -109,6 +125,10 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
+    /**
+     * Initialize and setup all status objects, like those that monitor
+     * pieces remaining, game timer, whose turn it is, and so on
+     */
     private void initializeStatus() {
     	statusLabel = new JLabel("Initialized board");
     	statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -142,6 +162,9 @@ public class CheckerBoardPanel extends JPanel {
     	add(turnTimeLabel, Main.createConstraints(2, 0, 1, GridBagConstraints.CENTER, 50, 50));
     }
     
+    /**
+     * Populate the game board initialize the necessary listeners
+     */
     private void initializeBoardGUI() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -152,6 +175,9 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
+    /**
+     * Randomizing who moves first
+     */
     private void decideWhoMovesFirst() {
         int random = new Random().nextInt(2);
         if (random == 0) {
@@ -163,6 +189,11 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
+    /**
+     * Initializes our game's menu and menu bar
+     * Handles the toggles for player's selections with action listener
+     * @return the menuBar so that the menuBar is added to the game client
+     */
     public JMenuBar initializeMenu() {
     	menuBar = new JMenuBar();
     	JMenu settings = new JMenu("Settings");
@@ -220,6 +251,12 @@ public class CheckerBoardPanel extends JPanel {
         return menuBar;
     }
     
+    /**
+     * Method for handling our end-game pop-up. 
+     * @param title - Set the title to who won the game
+     * @param losingPlayer - Displays the int of player who won or lost
+     * @param playAgainOption - Boolean for checking whether each player selected the play again option on the network
+     */
     public void displayEndGameOptions(String title, int losingPlayer, boolean playAgainOption) {
         SoundPlayer.victorySoundEffect();
         JButton playAgain = new JButton("Play Again");
@@ -273,11 +310,22 @@ public class CheckerBoardPanel extends JPanel {
         });
     }
 
+    /**
+     * Whenever called, set the text of the player's remaining pieces
+     */
     private void updatePlayerStatus() {
         player1Status.setText("Player 1 Pieces: " + numPlayer1Pieces);
         player2Status.setText("Player 2 Pieces: " + numPlayer2Pieces);
     }
     
+    /**
+     * Move the piece properly. Handles exceptions in the case of a bug.
+     * @param fromY - Y coordinate of where the piece is moving from
+     * @param fromX - X coordinate of where the piece is moving from
+     * @param toY - Y coordinate of where the piece is moving to
+     * @param toX - X coordinate of where the piece is moving to
+     * @return
+     */
     public Space movePiece(int fromY, int fromX, int toY, int toX) {
         if (networkGame && socketProtocol.playerNum == currentPlayer) {
             socketProtocol.sendMessage(
@@ -303,6 +351,12 @@ public class CheckerBoardPanel extends JPanel {
         return newSpace;
     }
 
+    /**
+     * Remove the piece if needs to be removed.
+     * Ticks down the count of the players pieces remaining.
+     * @param fromY - Remove the piece at this Y
+     * @param fromX - Remove the piece at this X
+     */
     public void removePiece(int fromY, int fromX) {
         if (networkGame && socketProtocol.playerNum == currentPlayer) {
             socketProtocol.sendMessage(
@@ -322,6 +376,12 @@ public class CheckerBoardPanel extends JPanel {
         updatePlayerStatus();
     }
     
+    /**
+     * Handles changing the player correctly. 
+     * Handles the network aspect of changing the player.
+     * Updates the status label correctly as to whose turn it is. 
+     * @param turnTimeExpired - Boolean checking if the turn time expired or not
+     */
     public void changePlayer(boolean turnTimeExpired) {
         if (networkGame && socketProtocol.playerNum == currentPlayer) {
             socketProtocol.sendMessage(
@@ -349,6 +409,10 @@ public class CheckerBoardPanel extends JPanel {
         }
     }
     
+    /**
+     * Check whether the game is over or not.
+     * If the game is over, then display who has won the game.
+     */
     private void checkGameOver() {
         if (numPlayer1Pieces == 0) {
             String title = "Player 2 Wins!";

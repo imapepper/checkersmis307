@@ -58,6 +58,10 @@ public class CheckerPiece {
         isKing = true;
     }
 
+    /**
+     * Get all valid moves for the selected piece
+     * @return the jumpMoves if force enabled, otherwise return validMoves
+     */
     public Space[] getValidMoves() {
         if(forceJumpEnabled && jumpMoves != null) {
             return jumpMoves;
@@ -66,14 +70,27 @@ public class CheckerPiece {
         }
     }
 
+    /**
+     * Sets all the valid moves that were discovered by getValidMoves
+     * @param validMoves validMoves stored in the Space[] array
+     */
     public void setValidMoves(Space[] validMoves) {
         this.validMoves = validMoves;
     }
 
+    /**
+     * Sets jumpMoves to null after the players turn has ended
+     */
     public void resetJumpMoves() {
         jumpMoves = null;
     }
 
+    /**
+     * If there were no jump moves, add a jump mpve Space to the jumpMoves Space[]
+     * Otherwise, copy jumpMoves array and the jump length + 1
+     * Lastly, set the local jumpMpve equal to jumpMoves array with jumpMoves length - 1
+     * @param jumpMove parameter for whether the space is a jump move or not
+     */
     public void addJumpMove(Space jumpMove) {
         if(jumpMoves == null) {
             jumpMoves = new Space[1];
