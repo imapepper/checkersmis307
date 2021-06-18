@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
 Main-Class: main.Main
-Class-Path: resources/
+Class-Path: javax.json-1.1.0-M1.jar resources/
